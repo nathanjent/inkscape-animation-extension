@@ -8,6 +8,7 @@ class ImportPenciltest(inkex.Effect):
 
     def __init__(self):
         inkex.Effect.__init__(self)
+        # Parse the Options from the dialog
         self.OptionParser.add_option('--fromframe', action = 'store',
          				type = 'int', dest = 'fromframe', default = '1',
           				help = 'From frame #')
@@ -26,10 +27,12 @@ class ImportPenciltest(inkex.Effect):
 	self.OptionParser.add_option('--svgh', action = 'store',
 	  				type = 'int', dest = 'svgh', default = '316',
 	  				help = 'SVG Document Height')
-        self.OptionParser.add_option("--tab",
-                                        action="store", type="string", 
-                                        dest="tab", default="Frames",
-                                        help="The selected UI-tab when OK was pressed")
+	self.OptionParser.add_option('--importpencil', action = 'store',
+					type = "inkbool",  dest = "importpencil", default = "false",
+					help = "Import pencil test images?")
+	self.OptionParser.add_option("--tab", action="store",
+					type="string", dest="tab", default="Frames",
+					help="The selected UI-tab when OK was pressed")
 	self.OptionParser.add_option('--bgcolor', action = 'store',
 	  				type = 'string', dest = 'bgcolor', default = 0,
 	  				help = 'Frame background color')
@@ -54,6 +57,7 @@ class ImportPenciltest(inkex.Effect):
 	filetype = self.options.filetype
 	svgw = self.options.svgw
 	svgh = self.options.svgh
+	importpencil = self.options.importpencil
 	bgcolor = self.getColorString(self.options.bgcolor)
 
         svg = self.document.getroot()
@@ -87,15 +91,16 @@ class ImportPenciltest(inkex.Effect):
 	 bgfill.set('height', '%s' % (height))
 	 bgfill.set('style', 'fill:%s' % (bgcolor))
 	 bgfill.set(inkex.addNS('id'), 'bgfill%s' % (i))
-	 pencil = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
-	 pencil.set(inkex.addNS('label', 'inkscape'), 'pencil')
-	 pencil.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-	 pencil.set('style', 'opacity:0.4')
-	 pencil.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-	 pencil.set(inkex.addNS('id'), 'pencil%s' % (i))
-	 pimage = inkex.etree.SubElement(self.getElementById('pencil%s' % (i)), inkex.addNS('image','svg'))
-	 pimage.set(inkex.addNS('href','xlink'), '%s%s%s' % (filename,i,filetype))
-	 pimage.set(inkex.addNS('id'), 'pimage%s' % (i))
+	 if importpencil:
+		 pencil = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
+		 pencil.set(inkex.addNS('label', 'inkscape'), 'pencil')
+		 pencil.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+		 pencil.set('style', 'opacity:0.4')
+		 pencil.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
+		 pencil.set(inkex.addNS('id'), 'pencil%s' % (i))
+		 pimage = inkex.etree.SubElement(self.getElementById('pencil%s' % (i)), inkex.addNS('image','svg'))
+		 pimage.set(inkex.addNS('href','xlink'), '%s%s%s' % (filename,i,filetype))
+		 pimage.set(inkex.addNS('id'), 'pimage%s' % (i))
 	 paint = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
 	 paint.set(inkex.addNS('label', 'inkscape'), 'paint')
 	 paint.set(inkex.addNS('groupmode', 'inkscape'), 'layer')

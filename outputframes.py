@@ -3,6 +3,8 @@ import sys, os
 sys.path.append('/usr/share/inkscape/extensions')
 import inkex
 from simplestyle import *
+from cStringIO import StringIO
+
 
 try:
     from subprocess import Popen, PIPE
@@ -49,20 +51,20 @@ class OutputFrames(inkex.Effect):
     def __init__(self):
         inkex.Effect.__init__(self)
         self.OptionParser.add_option('--fromframe', action = 'store',
-         				type = 'int', dest = 'fromframe', default = '1',
-          				help = 'From frame #')
+            type = 'int', dest = 'fromframe', default = '1',
+            help = 'From frame #')
         self.OptionParser.add_option('--toframe', action = 'store',
-          				type = 'int', dest = 'toframe', default = '10',
-          				help = 'From frame #')
+            type = 'int', dest = 'toframe', default = '10',
+            help = 'From frame #')
         self.OptionParser.add_option("--directory", action="store", 
-                                        type="string", dest="directory",
-                                        default="~/output/", help="Directory to save images to")                               
+            type="string", dest="directory", default="./",
+            help="Directory to save images to")                               
         self.OptionParser.add_option("--image", action="store", 
-                                        type="string", dest="image", 
-                                        default=None, help="Image name (without extension)")
+            type="string", dest="image", default=None,
+            help="Image name (without extension)")
         self.OptionParser.add_option("--hpencil", action="store", 
-                                        type="inkbool", dest="hpencil", 
-                                        default="true", help="Hide pencil sublayer during export?")
+            type="inkbool", dest="hpencil", default="true",
+            help="Hide pencil sublayer during export?")
 
     def check_dir_exists(self, dir):
         if not os.path.isdir(dir):
@@ -73,37 +75,35 @@ class OutputFrames(inkex.Effect):
         toframe = self.options.toframe+1
         svg_file = self.args[-1]
         docname = self.xpathSingle('/svg:svg/@sodipodi:docname')[:-4]
-	dirname = os.path.dirname(self.options.directory)
-	if dirname == '' or dirname == None:
+        dirname = os.path.dirname(self.options.directory)
+        image = self.options.image
+        hpencil = self.options.hpencil
+        
+        if dirname == '' or dirname == None:
             dirname = './'
-        inkex.errormsg(dirname)
         dirname = os.path.expanduser(dirname)
         dirname = os.path.expandvars(dirname)
         #self.check_dir_exists(dirname)
-	image = self.options.image
-	hpencil = self.options.hpencil
-
-	for r in range(fromframe, toframe):
-	    i = format(r, '03d')
-	    
-	    layer = self.getElementById('%s' % (i))
-	    layer.set('style', 'display:inline')
-	    pencil = self.getElementById('pencil%s' % (i))
-	    if hpencil:
-		pencil.set('style', 'display:none')
-	    else:
-		pencil.set('style', inkex.addNS('inline', 'display'))
-	    
+        commands = StringIO()
+        for r in range(fromframe, toframe):
+            i = format(r, '03d')
+            layer = self.getElementById('%s' % (i))
+            layer.set('style', 'display:inline')
+            pencil = self.getElementById('pencil%s' % (i))
+            if (pencil):
+                if hpencil:
+                    pencil.set('style', 'display:none')
+                else:
+                    pencil.set('style', inkex.addNS('inline', 'display'))
             filename = dirname + os.path.sep + image + i + ".png"
-            command = "inkscape %s -i %s -j -C -e %s" % (svg_file, i, filename)
-   	    if bsubprocess:
-                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                return_code = p.wait()
-                f = p.stdout
-                err = p.stderr
-            else:
-                _, f, err = os.open3(command)
-            f.close()
+            commands.write("%s -i %s -j -C -e %s\n" % (svg_file, i, filename))
+        commands.write("quit\n")
+        if bsubprocess:
+            echo = Popen(['echo', commands.getvalue()], shell=False, stdout=PIPE)
+            ink = Popen(['inkscape', '--shell'], shell=False, stdin=echo.stdout, stdout=PIPE, stderr=PIPE)
+        else:
+            _, ink, err = os.open3('inkscape --shell <<COMMANDS\n%sCOMMANDS' % (commands))
+            ink.close()
 
 if __name__ == '__main__':
     e = OutputFrames()

@@ -10,6 +10,7 @@
 	  <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">10</param>
 	  <param name="svgw" type="int" min="1" max="9999" _gui-text="Document width">560</param>
 	  <param name="svgh" type="int" min="1" max="9999" _gui-text="Document height">316</param>
+	  <param name="importpencil" type="boolean" _gui-text="Import pencil test to sublayer?">false</param>
 	  <param name="filename" type="string" _gui-text="Base name of input images (no frame # or extension)">frame</param>
 	  <param name="filetype" type="string" _gui-text="Image filetype extension ex. (.png) ">.png</param>
     </page>  

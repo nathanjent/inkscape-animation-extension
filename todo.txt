@@ -1,15 +1,11 @@
 Output Frames:
 range(rfrom, rto)
 
-option to hide pencil and other layers with a checkbox before saving to image file.
+option to hide other layers with a checkbox before saving to image file.
 
 
 
 Import Pencil Test:
 option to lock pencil layer upon creation for easier inking
 option to choose frame sublayer names and amount
-option to choose the background rectangle's color or image
-
-show/hide frame sublayers extension:
-show/hide layers. sublayers
-lock/unlock layers, sublayers
+option to choose the background rectangle's image
