@@ -1,5 +1,5 @@
 # makefile
-# Use 'make makefile' to install to the current user's inkscape extensions folder.
+# Use 'make makefile' to install to the current user's inkscape extensions folder (linux only for now).
 # Files:
 # hideframelayers.inx hideframelayers.py importpenciltest.inx importpenciltest.py outputframes.inx outputframes.py README
 

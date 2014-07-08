@@ -4,15 +4,15 @@ Inkscape Animation Extension
 This extension has nothing to do with svg type animation using SMIL or Javascript. I simply needed a way to import bitmap image frames for inking. Then I needed a way to extract those inked frames and compile them into a 
 movie using ffmpeg.
 
-I recommend starting with a new inkscape document when importing your pencil frames. I usually create my frames using Pencil http://www.pencil-animation.org/ Just input which frame numbers you'd like to import. Keeping the amount of frames low helps inkscape run better (once I add in the "show/hide sub-layers" feature this should be less of an issue as the slowdown only happens when many bitmap images are actually displayed). I like to set the document dimensions equal to the imported images. The base filename should include the directory (example:"/home/me/pencilframes/frame") without the frame number or filetype extension. Though, if you save your inkscape file in the same directory as your imported images you can get away with just using the filename (ex. "frame"). Then enter the filetype extension of your imported images and apply.  This will create a series of numbered layers with four sub-layers ink, paint, pencil, and background.  Pencil will contain the imported images. The background will contain a gray colored rectangle the same 
-size as the document. (later I'll add an option to choose the rectangle's color)
+I recommend starting with a new inkscape document when importing your pencil frames. I usually create my frames using Pencil http://www.pencil-animation.org/ Just input which frame numbers you'd like to import. Keeping the amount of frames low helps inkscape run better (once I add in the "show/hide sub-layers" feature this should be less of an issue as the slowdown only happens when many bitmap images are actually displayed). I like to set the document dimensions equal to the imported images. The base filename should include the directory (example:"/home/me/pencilframes/<frame_image>") without the frame number or filetype extension. Though, if you save your inkscape file in the same directory as your imported images you can get away with just using the filename. Then enter the filetype extension of your imported images and apply.  This will create a series of numbered layers with four sub-layers ink, paint, pencil, and background.  Pencil will contain the imported images. The background will contain a colored rectangle the same 
+size as the document.
 
-Once you have all of your frames inked and painted its time to run the output extension. Enter the directory to save you images to and the base filename without the extension and apply. (The extension only outputs to png format.) This should give you a series of inked image frames to input into ffmpeg or maybe imagemagick and create a movie or gif file.
+Once you have all of your frames inked and painted its time to run the output extension. Enter the directory to save images to and the base filename without the extension and apply. (The extension only outputs to png format.) This should give you a series of inked image frames to input into ffmpeg or maybe imagemagick and create a movie or gif file.
 
 HISTORY
 =======
 
-June 2014 -- Changes made to use inkscape 'shell' mode. This means only one other instance of inkscape is run to process the frames instead of running an instance for each frame.
+June 2014 -- Changes made to use inkscape 'shell' mode. This means only one other instance of inkscape is run to process the frames instead of running an instance for each frame. I am hoping this will speed up frame processing.
 
 TODO
 ====
@@ -30,6 +30,7 @@ Installation
 ============
 
 Copy the .inx and .py files into ~/.config/inkscape/extensions/ and restart inkscape. 
+Or use the makefile to install.
 
 For global installation place in /usr/share/inkscape/extensions (your distro may vary)
 
