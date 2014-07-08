@@ -6,16 +6,16 @@
     <dependency type="executable" location="extensions">inkex.py</dependency>
   <param name="fromframe" type="int" min="1" max="999" _gui-text="From frame">1</param>
   <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">10</param>
-  <param name="hframe" type="boolean" _gui-text="Hide all frame layers">false</param>
-  <param name="lframe" type="boolean" _gui-text="Lock all frame layers">false</param>
-  <param name="hink" type="boolean" _gui-text="Hide all ink sublayers">false</param>
-  <param name="link" type="boolean" _gui-text="Lock all ink sublayers">false</param>
-  <param name="hpaint" type="boolean" _gui-text="Hide all paint sublayers">false</param>
-  <param name="lpaint" type="boolean" _gui-text="Lock all paint sublayers">false</param>
-  <param name="hbackground" type="boolean" _gui-text="Hide all background sublayers">false</param>
-  <param name="lbackground" type="boolean" _gui-text="Lock all background sublayers">false</param>
-  <param name="hpencil" type="boolean" _gui-text="Hide all pencil sublayers">false</param>
-  <param name="lpencil" type="boolean" _gui-text="Lock all pencil sublayers">false</param>
+  <param name="hframe" type="boolean" _gui-text="Hide frame layers">false</param>
+  <param name="lframe" type="boolean" _gui-text="Lock frame layers">false</param>
+  <param name="hink" type="boolean" _gui-text="Hide ink sublayers">false</param>
+  <param name="link" type="boolean" _gui-text="Lock ink sublayers">false</param>
+  <param name="hpaint" type="boolean" _gui-text="Hide paint sublayers">false</param>
+  <param name="lpaint" type="boolean" _gui-text="Lock paint sublayers">false</param>
+  <param name="hbackground" type="boolean" _gui-text="Hide background sublayers">false</param>
+  <param name="lbackground" type="boolean" _gui-text="Lock background sublayers">false</param>
+  <param name="hpencil" type="boolean" _gui-text="Hide pencil sublayers">false</param>
+  <param name="lpencil" type="boolean" _gui-text="Lock pencil sublayers">false</param>
   <effect needs-live-preview="false">
     <object-type>all</object-type>
     <effects-menu>

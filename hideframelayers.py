@@ -1,4 +1,25 @@
 #!/usr/bin/env python
+"""
+hideframelayers.py
+Tool for hiding and locking frame layers.
+It is part of the Inkscape animation extension
+
+Copyright (C) 2014 Nathan Jent <nathanjent@nathanjent.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+"""
 import sys, os.path
 sys.path.append('/usr/share/inkscape/extensions')
 import inkex
@@ -44,9 +65,24 @@ class HideLockSublayers(inkex.Effect):
                 type = 'int', dest = 'toframe', default = '2',
                 help = 'From frame #')
 
+    def setlockhide(self, node, hide, lock):
+        if lock:
+            node.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
+        else:
+            try:
+                del node.attrib[inkex.addNS('insensitive', 'sodipodi')]
+            except KeyError:
+                pass
+        if hide:
+            node.set('style', 'display:none')
+        else:
+            node.set('style', 'display:inline')
+
     def effect(self):
+        self.svg = self.document.getroot()
+        
         fromframe = self.options.fromframe
-        toframe = self.options.toframe+1
+        toframe = self.options.toframe
         hframe = self.options.hframe
         lframe = self.options.lframe
         hink = self.options.hink
@@ -58,70 +94,32 @@ class HideLockSublayers(inkex.Effect):
         hpencil = self.options.hpencil
         lpencil = self.options.lpencil
         
-        for r in range(fromframe, toframe):
-            i = format(r, '03d')
-            layer = self.getElementById('%s' % (i))
-            if lframe:
-                layer.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-            else:
+        log = ''
+        for node in self.svg.iter():
+            tag = node.tag.split("}")[1]
+            log += '%s\n' % (tag)
+            if node.tag == inkex.addNS('g','svg'):
+                idattr = node.attrib['id']
+                frametype = idattr[:-3]
+                frame = idattr[-3:]
                 try:
-                    del layer.attrib[inkex.addNS('insensitive', 'sodipodi')]
-                except KeyError:
-                    pass
-            if hframe:
-                layer.set('style', 'display:none')
-            else:
-                layer.set('style', 'display:inline')
-            ink = self.getElementById('ink%s' % (i))
-            if link:
-                ink.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-            else:
-                try:
-                    del ink.attrib[inkex.addNS('insensitive', 'sodipodi')]
-                except KeyError:
-                    pass
-            if hink:
-                ink.set('style', 'display:none')
-            else:
-                ink.set('style', 'display:inline')
-            paint = self.getElementById('paint%s' % (i))
-            if lpaint:
-                paint.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-            else:
-                try:
-                    del paint.attrib[inkex.addNS('insensitive', 'sodipodi')]
-                except KeyError:
-                    pass
-            if hpaint:
-                paint.set('style', 'display:none')
-            else:
-                paint.set('style', 'display:inline')
-            background = self.getElementById('bg%s' % (i))
-            if lbackground:
-                background.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-            else:
-                try:
-                    del background.attrib[inkex.addNS('insensitive', 'sodipodi')]
-                except KeyError:
-                    pass
-            if hbackground:
-                background.set('style', 'display:none')
-            else:
-                background.set('style', 'display:inline')
-            pencil = self.getElementById('pencil%s' % (i))
-            if (pencil):
-                if lpencil:
-                    pencil.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-                else:
-                    try:
-                        del pencil.attrib[inkex.addNS('insensitive', 'sodipodi')]
-                    except KeyError:
-                        pass
-                if hpencil:
-                    pencil.set('style', 'display:none')
-                else:
-                    pencil.set('style', 'display:inline')
-
+                    framenum = int(frame)
+                except:
+                    continue
+                log += 'idattr:%s type:%s frame:%s\n' % (idattr, frametype, frame)
+                if fromframe <= framenum <= toframe:
+                    if frametype == 'f':
+                        self.setlockhide(node, hframe, lframe)
+                    if frametype == 'bg':
+                        self.setlockhide(node, hbackground, lbackground)
+                    if frametype == 'paint':
+                        self.setlockhide(node, hpaint, lpaint)
+                    if frametype == 'ink':
+                        self.setlockhide(node, hink, link)
+                    if frametype == 'pencil':
+                        self.setlockhide(node, hpencil, lpencil)
+        #uncomment next line to see log
+        #inkex.errormsg(log)   
 
 if __name__ == '__main__':
     effect = HideLockSublayers()

@@ -1,10 +1,30 @@
 #!/usr/bin/env python
+"""
+hideframelayers.py
+Tool for outputting frame layers to a series of png images.
+It is part of the Inkscape animation extension
+
+Copyright (C) 2014 Nathan Jent <nathanjent@nathanjent.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+"""
 import sys, os
 sys.path.append('/usr/share/inkscape/extensions')
 import inkex
 from simplestyle import *
 from cStringIO import StringIO
-
 
 try:
     from subprocess import Popen, PIPE
@@ -12,41 +32,6 @@ try:
 except:
     bsubprocess = False
 
-"""
-# leftover stuff from GifAnimate extension, used gimp_xcf extension instead
-class OutputFrames(inkex.Effect):
-    def __init__(self):
-        inkex.Effect.__init__(self)
-
-    def effect(self):
-        infile = sys.argv[-1]
-
-        # Get access to main SVG document element and get its dimensions.
-        from xml.dom.minidom import parse, parseString
-        dom = parse(infile)
-        svg = dom.getElementsByTagName('svg')[0]
-
-        layers = svg.getElementsByTagName('g')
-        command = "inkscape %s -C -i '%s' -j -e /tmp/%s.png 2>&1 > /dev/null"
-
-        layerids = []
-        for l in layers:
-                layerids.append(l.getAttribute('id'))
-
-        [os.system(pngcommand % (infile, id, id)) for id in layerids if id.startswith('f')]
-	if bsubprocess:
-                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                return_code = p.wait()
-                f = p.stdout
-                err = p.stderr
-        else:
-        _, f, err = os.open3(command)
-        f.close()
-
-# Create effect instance and apply it.
-effect = OutputFrames()
-effect.affect()
-	"""
 class OutputFrames(inkex.Effect):
     def __init__(self):
         inkex.Effect.__init__(self)
@@ -69,10 +54,17 @@ class OutputFrames(inkex.Effect):
     def check_dir_exists(self, dir):
         if not os.path.isdir(dir):
             os.makedirs(dir)
+            
+    def sethide(self, node, hide):
+        if hide:
+            node.set('style', 'display:none')
+        else:
+            node.set('style', 'display:inline')
 
     def effect(self):
+        self.svg = self.document.getroot()
         fromframe = self.options.fromframe
-        toframe = self.options.toframe+1
+        toframe = self.options.toframe
         svg_file = self.args[-1]
         docname = self.xpathSingle('/svg:svg/@sodipodi:docname')[:-4]
         dirname = os.path.dirname(self.options.directory)
@@ -85,27 +77,42 @@ class OutputFrames(inkex.Effect):
         dirname = os.path.expandvars(dirname)
         #self.check_dir_exists(dirname)
         commands = StringIO()
-        for r in range(fromframe, toframe):
-            i = format(r, '03d')
-            layer = self.getElementById('%s' % (i))
-            layer.set('style', 'display:inline')
-            pencil = self.getElementById('pencil%s' % (i))
-            if (pencil):
-                if hpencil:
-                    pencil.set('style', 'display:none')
-                else:
-                    pencil.set('style', inkex.addNS('inline', 'display'))
-            filename = dirname + os.path.sep + image + i + ".png"
-            commands.write("%s -i %s -j -C -e %s\n" % (svg_file, i, filename))
+        log = ''
+        
+        # TODO iterate through the xml whenever the layer name is between
+        # fromframe and toframe then edit the xml
+        for node in self.svg.iter():
+            tag = node.tag.split("}")[1]
+            if node.tag == inkex.addNS('g','svg'):
+                idattr = node.attrib['id']
+                frametype = idattr[:-3]
+                frame = idattr[-3:]
+                try:
+                    framenum = int(frame)
+                except:
+                    continue
+                log += 'idattr:%s type:%s frame:%s\n' % (idattr, frametype, frame)
+                if fromframe <= framenum <= toframe:
+                    if frametype == 'f':
+                        self.sethide(node, False)
+                        filename = dirname + os.path.sep + image + frame + ".png"
+                        commands.write("%s -i %s -j -C -e %s\n" % (svg_file, idattr, filename))
+                    if frametype == 'pencil':
+                        self.sethide(node, hpencil)
+        #TODO frames not being set to show
         commands.write("quit\n")
         if bsubprocess:
             echo = Popen(['echo', commands.getvalue()], shell=False, stdout=PIPE)
             ink = Popen(['inkscape', '--shell'], shell=False, stdin=echo.stdout, stdout=PIPE, stderr=PIPE)
         else:
+			#reference: http://stackoverflow.com/questions/7442665/convert-svg-file-to-multiple-different-size-png-files
             _, ink, err = os.open3('inkscape --shell <<COMMANDS\n%sCOMMANDS' % (commands))
             ink.close()
+        stdoutdata, stderrdata = ink.communicate()
+        log += stdoutdata
+        #uncomment next line to see log
+        #inkex.errormsg(log + commands.getvalue())
 
 if __name__ == '__main__':
     e = OutputFrames()
     e.affect()
-

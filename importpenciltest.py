@@ -1,116 +1,134 @@
 #!/usr/bin/env python
+"""
+importpenciltest.py
+Tool for creating animation frame layers. A pencil test can also
+be imported as a series of images linked to the frame layers.
+It is part of the Inkscape animation extension.
+
+Copyright (C) 2014 Nathan Jent <nathanjent@nathanjent.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+"""
 import sys, os.path
 sys.path.append('/usr/share/inkscape/extensions')
 import inkex
 from simplestyle import *
 
 class ImportPenciltest(inkex.Effect):
-
     def __init__(self):
         inkex.Effect.__init__(self)
         # Parse the Options from the dialog
         self.OptionParser.add_option('--fromframe', action = 'store',
-         				type = 'int', dest = 'fromframe', default = '1',
-          				help = 'From frame #')
+            type = 'int', dest = 'fromframe', default = '1',
+            help = 'From frame #')
         self.OptionParser.add_option('--toframe', action = 'store',
-          				type = 'int', dest = 'toframe', default = '10',
-          				help = 'From frame #')
-	self.OptionParser.add_option('--filename', action = 'store',
-	  				type = 'string', dest = 'filename', default = 'frame',
-	  				help = 'Base file name')
-	self.OptionParser.add_option('--filetype', action = 'store',
-	  				type = 'string', dest = 'filetype', default = '.png',
-	  				help = 'Base file name')
-	self.OptionParser.add_option('--svgw', action = 'store',
-	  				type = 'int', dest = 'svgw', default = '560',
-	  				help = 'SVG Document Width')
-	self.OptionParser.add_option('--svgh', action = 'store',
-	  				type = 'int', dest = 'svgh', default = '316',
-	  				help = 'SVG Document Height')
-	self.OptionParser.add_option('--importpencil', action = 'store',
-					type = "inkbool",  dest = "importpencil", default = "false",
-					help = "Import pencil test images?")
-	self.OptionParser.add_option("--tab", action="store",
-					type="string", dest="tab", default="Frames",
-					help="The selected UI-tab when OK was pressed")
-	self.OptionParser.add_option('--bgcolor', action = 'store',
-	  				type = 'string', dest = 'bgcolor', default = 0,
-	  				help = 'Frame background color')
+            type = 'int', dest = 'toframe', default = '10',
+            help = 'From frame #')
+        self.OptionParser.add_option('--filename', action = 'store',
+            type = 'string', dest = 'filename', default = 'frame',
+            help = 'Base file name')
+        self.OptionParser.add_option('--filetype', action = 'store',
+            type = 'string', dest = 'filetype', default = '.png',
+            help = 'Base file name')
+        self.OptionParser.add_option('--svgw', action = 'store',
+            type = 'int', dest = 'svgw', default = '560',
+            help = 'SVG Document Width')
+        self.OptionParser.add_option('--svgh', action = 'store',
+            type = 'int', dest = 'svgh', default = '316',
+            help = 'SVG Document Height')
+        self.OptionParser.add_option('--importpencil', action = 'store',
+            type = "inkbool",  dest = "importpencil", default = "false",
+            help = "Import pencil test images?")
+        self.OptionParser.add_option("--tab", action="store",
+            type="string", dest="tab", default="Frames",
+            help="The selected UI-tab when OK was pressed")
+        self.OptionParser.add_option('--bgcolor', action = 'store',
+            type = 'string', dest = 'bgcolor', default = 0,
+            help = 'Frame background color')
 
     def unsignedLong(self, signedLongString):
-	longColor = long(signedLongString)
-	if longColor < 0:
-	 longColor = longColor & 0xFFFFFFFF
-	return longColor
+        longColor = long(signedLongString)
+        if longColor < 0:
+            longColor = longColor & 0xFFFFFFFF
+        return longColor
 
-	#A*256^0 + B*256^1 + G*256^2 + R*256^3
+    #A*256^0 + B*256^1 + G*256^2 + R*256^3
     def getColorString(self, longColor):
-	longColor = self.unsignedLong(longColor)
-	hexColor = hex(longColor)[2:-3]
-	hexColor = hexColor.rjust(6, '0')
-	return '#' + hexColor.upper()
+        longColor = self.unsignedLong(longColor)
+        hexColor = hex(longColor)[2:-3]
+        hexColor = hexColor.rjust(6, '0')
+        return '#' + hexColor.upper()
 
     def effect(self):
         fromframe = self.options.fromframe
         toframe = self.options.toframe+1
-	filename = self.options.filename
-	filetype = self.options.filetype
-	svgw = self.options.svgw
-	svgh = self.options.svgh
-	importpencil = self.options.importpencil
-	bgcolor = self.getColorString(self.options.bgcolor)
+        filename = self.options.filename
+        filetype = self.options.filetype
+        svgw = self.options.svgw
+        svgh = self.options.svgh
+        importpencil = self.options.importpencil
+        bgcolor = self.getColorString(self.options.bgcolor)
 
         svg = self.document.getroot()
         # or alternatively
         # svg = self.document.xpath('//svg:svg',namespaces=inkex.NSS)[0]
 
-	#set svg document dimensions
-	svg.set('width', '%s' % (svgw))
-	svg.set('height', '%s' % (svgh))
-
+        #set svg document dimensions
+        svg.set('width', '%s' % (svgw))
+        svg.set('height', '%s' % (svgh))
+        
         width  = inkex.unittouu(svg.get('width'))
         height = inkex.unittouu(svg.attrib['height'])
-	
-	for r in range(fromframe, toframe):
-	 i = format(r, '03d')
-         # Create a new layer.
-         layer = inkex.etree.SubElement(svg, 'g')
-         layer.set(inkex.addNS('label', 'inkscape'), '%s' % (i))
-         layer.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-	 layer.set(inkex.addNS('id'), '%s' % (i))
-	 layer.set('style', 'display:none')
-	
-	# Create ink, paint, and pencil layers.
-	 background = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
-	 background.set(inkex.addNS('label', 'inkscape'), 'background')
-	 background.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-	 background.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-	 background.set(inkex.addNS('id'), 'bg%s' % (i))
-	 bgfill = inkex.etree.SubElement(self.getElementById('bg%s' % (i)), 'rect')
-	 bgfill.set('width', '%s' % (width))
-	 bgfill.set('height', '%s' % (height))
-	 bgfill.set('style', 'fill:%s' % (bgcolor))
-	 bgfill.set(inkex.addNS('id'), 'bgfill%s' % (i))
-	 if importpencil:
-		 pencil = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
-		 pencil.set(inkex.addNS('label', 'inkscape'), 'pencil')
-		 pencil.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-		 pencil.set('style', 'opacity:0.4')
-		 pencil.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
-		 pencil.set(inkex.addNS('id'), 'pencil%s' % (i))
-		 pimage = inkex.etree.SubElement(self.getElementById('pencil%s' % (i)), inkex.addNS('image','svg'))
-		 pimage.set(inkex.addNS('href','xlink'), '%s%s%s' % (filename,i,filetype))
-		 pimage.set(inkex.addNS('id'), 'pimage%s' % (i))
-	 paint = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
-	 paint.set(inkex.addNS('label', 'inkscape'), 'paint')
-	 paint.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-	 paint.set(inkex.addNS('id'), 'paint%s' % (i))
-	 ink = inkex.etree.SubElement(self.getElementById('%s' % (i)), 'g')
-	 ink.set(inkex.addNS('label', 'inkscape'), 'ink')
-	 ink.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
-	 ink.set(inkex.addNS('id'), 'ink%s' % (i))
+
+        for r in range(fromframe, toframe):
+            i = format(r, '03d')
+            # Create a new frame layer.
+            layer = inkex.etree.SubElement(svg, 'g', id='f%s' % (i), 
+                                                style='display:none')
+            layer.set(inkex.addNS('label', 'inkscape'), 'f%s' % (i))
+            layer.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+
+            # Create ink, paint, background, and pencil layers.
+            background = inkex.etree.SubElement(layer, "g", 
+                id ='bg%s' % (i))
+            background.set(inkex.addNS('label', 'inkscape'), 'background')
+            background.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+            background.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
+            bgfill = inkex.etree.SubElement(background, 'rect', 
+                id='bgfill%s' % (i),
+                width='%d' % (width), 
+                height='%s' % (height),
+                style='fill:%s' % (bgcolor))
+            if importpencil:
+                pencil = inkex.etree.SubElement(layer, 'g', 
+                    id='pencil%s' % (i),
+                    style='opacity:0.4')
+                pencil.set(inkex.addNS('label', 'inkscape'), 'pencil')
+                pencil.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+                pencil.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
+                pimage = inkex.etree.SubElement(pencil, 'image', 
+                    id='pimage%s' % (i))
+                pimage.set(inkex.addNS('href','xlink'), '%s%s%s' % (filename,i,filetype))
+            paint = inkex.etree.SubElement(layer, 'g', 
+                id='paint%s' % (i))
+            paint.set(inkex.addNS('label', 'inkscape'), 'paint')
+            paint.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+            ink = inkex.etree.SubElement(layer, 'g', id='ink%s' % (i))
+            ink.set(inkex.addNS('label', 'inkscape'), 'ink')
+            ink.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
 
 # Create effect instance and apply it.
 effect = ImportPenciltest()
 effect.affect()
-
