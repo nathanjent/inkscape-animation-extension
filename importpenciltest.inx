@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-  <_name>Import Pencil Test</_name>
+  <_name>Create/Import Frames</_name>
   <id>com.nathanjent.effect.importpenciltest</id>
   <dependency type="executable" location="extensions">importpenciltest.py</dependency>
   <dependency type="executable" location="extensions">inkex.py</dependency>
   <param name="tab" type="notebook">
     <page name="Frames" _gui_text="Frame Options">
 	  <param name="fromframe" type="int" min="1" max="999" _gui-text="From frame">1</param>
-	  <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">10</param>
+	  <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">12</param>
+	  <param name="duration" type="float" min="0" max="999999" _gui-text="Frame time length (milliseconds)">83.3</param>
 	  <param name="svgw" type="int" min="1" max="9999" _gui-text="Document width">560</param>
 	  <param name="svgh" type="int" min="1" max="9999" _gui-text="Document height">316</param>
 	  <param name="importpencil" type="boolean" _gui-text="Import pencil test to sublayer?">false</param>
@@ -15,8 +16,8 @@
 	  <param name="filetype" type="string" _gui-text="Image filetype extension ex. (.png) ">.png</param>
     </page>  
     <page name="Background" _gui_text="Frame Background Options">
-          <param name="bgdesc" type="description">Set the backgrounds color.</param>
-          <param name="bgcolor" type="color" _gui-text="Set the color of the frame background">0</param>
+      <param name="bgdesc" type="description">Set the backgrounds color.</param>
+      <param name="bgcolor" type="color" _gui-text="Set the color of the frame background">0</param>
     </page>
   </param>
   <effect needs-live-preview="false">

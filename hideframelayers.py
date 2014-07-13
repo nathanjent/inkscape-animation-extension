@@ -62,8 +62,14 @@ class HideLockSublayers(inkex.Effect):
                 type = 'int', dest = 'fromframe', default = '1',
                 help = 'From frame #')
         self.OptionParser.add_option('--toframe', action = 'store',
-                type = 'int', dest = 'toframe', default = '2',
+                type = 'int', dest = 'toframe', default = '12',
                 help = 'From frame #')
+        self.OptionParser.add_option('--duration', action = 'store',
+                type = 'float', dest = 'duration', default = '0.1',
+                help = 'Display frame time length seconds')
+        self.OptionParser.add_option('--showframenum', action = 'store',
+                type = 'inkbool', dest = 'showframenum', default = 'false',
+                help = 'Display the frame number')
 
     def setlockhide(self, node, hide, lock):
         if lock:
@@ -83,6 +89,7 @@ class HideLockSublayers(inkex.Effect):
         
         fromframe = self.options.fromframe
         toframe = self.options.toframe
+        duration = self.options.duration
         hframe = self.options.hframe
         lframe = self.options.lframe
         hink = self.options.hink
@@ -93,21 +100,22 @@ class HideLockSublayers(inkex.Effect):
         lbackground = self.options.lbackground
         hpencil = self.options.hpencil
         lpencil = self.options.lpencil
-        
+        showframenum = self.options.showframenum
+                
         log = ''
         for node in self.svg.iter():
             tag = node.tag.split("}")[1]
             log += '%s\n' % (tag)
-            if node.tag == inkex.addNS('g','svg'):
+            try:
                 idattr = node.attrib['id']
                 frametype = idattr[:-3]
                 frame = idattr[-3:]
-                try:
-                    framenum = int(frame)
-                except:
-                    continue
-                log += 'idattr:%s type:%s frame:%s\n' % (idattr, frametype, frame)
-                if fromframe <= framenum <= toframe:
+                framenum = int(frame)
+            except:
+                continue
+            log += 'idattr:%s type:%s frame:%s\n' % (idattr, frametype, frame)
+            if fromframe <= framenum <= toframe:
+                if node.tag == inkex.addNS('g','svg'):
                     if frametype == 'f':
                         self.setlockhide(node, hframe, lframe)
                     if frametype == 'bg':
@@ -118,6 +126,19 @@ class HideLockSublayers(inkex.Effect):
                         self.setlockhide(node, hink, link)
                     if frametype == 'pencil':
                         self.setlockhide(node, hpencil, lpencil)
+                if node.tag == inkex.addNS('set','svg'):
+                    if frametype == 'init':
+                        node.set('dur', '%sms' % (duration * (framenum - 1)))
+                    if frametype == 'on':
+                        node.set('dur', '%sms' % (duration))
+                    if frametype == 'off':
+                        node.set('dur', '%sms' % ((duration * (toframe - 1)) - (duration * (framenum - 1)) + 1))
+                if node.tag == inkex.addNS('text', 'svg'):
+                    if frametype == 'frametext':
+                        if showframenum:
+                            node.set('style', 'display:inline;font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:0.3;stroke:none;font-family:Sans')
+                        else:
+                            node.set('style', 'display:none;font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:0.3;stroke:none;font-family:Sans')
         #uncomment next line to see log
         #inkex.errormsg(log)   
 

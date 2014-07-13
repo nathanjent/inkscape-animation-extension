@@ -2,9 +2,9 @@
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
   <_name>Output Frames</_name>
   <id>com.nathanjent.effect.OutputFrames</id>
-    <dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
-    <dependency type="executable" location="extensions">outputframes.py</dependency>
-    <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
+  <dependency type="executable" location="extensions">outputframes.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
   <param name="fromframe" type="int" min="1" max="999" _gui-text="From frame">1</param>
   <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">10</param>
   <param name="directory" type="string" _gui-text="Directory to save images to">~/</param>

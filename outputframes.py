@@ -79,7 +79,7 @@ class OutputFrames(inkex.Effect):
         commands = StringIO()
         log = ''
         
-        # TODO iterate through the xml whenever the layer name is between
+        # iterate through the xml whenever the layer name is between
         # fromframe and toframe then edit the xml
         for node in self.svg.iter():
             tag = node.tag.split("}")[1]
