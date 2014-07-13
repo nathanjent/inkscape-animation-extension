@@ -58,8 +58,8 @@ class ImportPenciltest(inkex.Effect):
             type = 'string', dest = 'bgcolor', default = 0,
             help = 'Frame background color')
         self.OptionParser.add_option('--duration', action = 'store',
-            type = 'float', dest = 'duration', default = '0.1',
-            help = 'Display frame time length seconds')
+            type = 'float', dest = 'duration', default = '83.3',
+            help = 'Display frame duration in milliseconds')
 
     def unsignedLong(self, signedLongString):
         longColor = long(signedLongString)
@@ -98,13 +98,14 @@ class ImportPenciltest(inkex.Effect):
         
         for framenum in range(fromframe, toframe):
             i = format(framenum, '03d')
+            
             # Create a new frame layer.
             layer = inkex.etree.SubElement(svg, 'g', id='f%s' % (i), 
                                                 style='display:none')
             layer.set(inkex.addNS('label', 'inkscape'), 'f%s' % (i))
             layer.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
             
-            # Add SMIL animation timing
+            # Add SMIL animation timing for browser preview
             initialstate = inkex.etree.SubElement(layer, 'set',
                 id='init%s' % (i),
                 attributeName='display',
@@ -126,7 +127,6 @@ class ImportPenciltest(inkex.Effect):
                 to='none',
                 begin='on%s.end' % (i), # begins when onstate ends
                 dur='%sms' % ((duration * (toframe - 1)) - (duration * (framenum - 1)) + 1))
-                #fill='freeze') # current state is held indefinitely
 
             # Create ink, paint, background, and pencil layers.
             background = inkex.etree.SubElement(layer, "g", 
@@ -156,6 +156,8 @@ class ImportPenciltest(inkex.Effect):
             ink = inkex.etree.SubElement(layer, 'g', id='ink%s' % (i))
             ink.set(inkex.addNS('label', 'inkscape'), 'ink')
             ink.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
+            
+            # Add the frame number to the layer.
             frametext = inkex.etree.SubElement(layer, 'text',
                 id='frametext%s' % (i),
                 x='0',
@@ -166,6 +168,7 @@ class ImportPenciltest(inkex.Effect):
                 x='0',
                 y='14')
             frametextspan.text = i
+            
 # Create effect instance and apply it.
 effect = ImportPenciltest()
 effect.affect()

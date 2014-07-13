@@ -1,11 +1,11 @@
 Output Frames:
-range(rfrom, rto)
 
-option to hide other layers with a checkbox before saving to image file.
-
-
+option to hide layers with a checkbox before saving to image file.
 
 Import Pencil Test:
 option to lock pencil layer upon creation for easier inking
 option to choose frame sublayer names and amount
 option to choose the background rectangle's image
+
+
+Fix slowdown after extension is processed. Example: Output frames saves all the image files to the disk (you can see them in the file explorer) then inkscape hangs trying to reload the affected svg. The slowdown gets worse with additional frames.

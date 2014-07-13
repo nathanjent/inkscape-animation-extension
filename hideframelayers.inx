@@ -6,7 +6,7 @@
   <dependency type="executable" location="extensions">inkex.py</dependency>
   <param name="fromframe" type="int" min="1" max="999" _gui-text="From frame">1</param>
   <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">12</param>
-  <param name="duration" type="float" min="0" max="999999" _gui-text="Frame time length (milliseconds)">83.3</param>
+  <param name="duration" type="float" min="0" max="999999" _gui-text="Frame duration (milliseconds)">83.3</param>
   <param name="showframenum" type="boolean" _gui-text="Show frame numbers">false</param>
   <param name="hframe" type="boolean" _gui-text="Hide frame layers">false</param>
   <param name="lframe" type="boolean" _gui-text="Lock frame layers">false</param>

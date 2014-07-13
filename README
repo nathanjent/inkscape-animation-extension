@@ -4,21 +4,32 @@ Inkscape Animation Extension
 This extension has nothing to do with svg type animation using SMIL or Javascript. I simply needed a way to import bitmap image frames for inking. Then I needed a way to extract those inked frames and compile them into a 
 movie using ffmpeg.
 
-I recommend starting with a new inkscape document when importing your pencil frames. I usually create my frames using Pencil http://www.pencil-animation.org/ Just input which frame numbers you'd like to import. Keeping the amount of frames low helps inkscape run better (once I add in the "show/hide sub-layers" feature this should be less of an issue as the slowdown only happens when many bitmap images are actually displayed). I like to set the document dimensions equal to the imported images. The base filename should include the directory (example:"/home/me/pencilframes/<frame_image>") without the frame number or filetype extension. Though, if you save your inkscape file in the same directory as your imported images you can get away with just using the filename. Then enter the filetype extension of your imported images and apply.  This will create a series of numbered layers with four sub-layers ink, paint, pencil, and background.  Pencil will contain the imported images. The background will contain a colored rectangle the same 
-size as the document.
+USAGE
+=====
 
-Once you have all of your frames inked and painted its time to run the output extension. Enter the directory to save images to and the base filename without the extension and apply. (The extension only outputs to png format.) This should give you a series of inked image frames to input into ffmpeg or maybe imagemagick and create a movie or gif file.
+Begin by using the 'Import/Create Frames' extension. I recommend starting with a new inkscape document when importing your pencil frames. I like to create my pencil test using Pencil http://www.pencil-animation.org/
+1. Input the frame range you'd like to import/create. Keeping the amount of frames low helps inkscape run better. 
+2. Input the frame duration. This is used to preview the animation by loading the svg file in a supported browser like Firefox. The timing works best when animations start from frame 1.
+3. I like to set the document dimensions equal to the image size when importing images.
+4. Set the import options: Check the box to import images. The base filename should include the directory (example:"/home/me/pencilframes/<frame_image>") without the frame number or filetype extension. If you save your inkscape file in the same directory as your imported images you can get away with just using the filename. Then enter the filetype extension of your imported images.
+5. Background color can be set on the background tab.
+6. Apply extension to create a series of numbered layers with four sub-layers ink, paint, pencil, and background. The pencil layer will contain the imported images. The background layer will contain a colored rectangle filling in the document boundary.
+
+The 'Set Frame Options' extension is used to adjust the frame duration, display the frame numbers, and to hide or lock multiple layers/sublayers.  Frame duration settings work best when setting the 'From' frame to 1 and the 'To' frame to the last frame layer number.
+
+Once you have all of your frames inked and painted its time to run the output extension. Enter the directory to save images to and the base filename without the extension and apply. This should give you a series of inked image frames to input into ffmpeg or maybe imagemagick and create a movie or gif file. (The extension only outputs to png format.)
 
 HISTORY
 =======
 
 June 2014 -- Changes made to use inkscape 'shell' mode. This means only one other instance of inkscape is run to process the frames instead of running an instance for each frame. I am hoping this will speed up frame processing.
+July 2014 -- Added options to display frame numbers and a frame duration option for previewing the animation in a supported browser like Firefox.
 
 TODO
 ====
 
-Add option to hide other layers during output.
-Add option to choose a background image(s).
+Fix bug with option to hide pencil layers during output.
+Add option to choose background image(s).
 Add option to choose sub-layer names.
 
 LICENSE

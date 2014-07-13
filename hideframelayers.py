@@ -65,8 +65,8 @@ class HideLockSublayers(inkex.Effect):
                 type = 'int', dest = 'toframe', default = '12',
                 help = 'From frame #')
         self.OptionParser.add_option('--duration', action = 'store',
-                type = 'float', dest = 'duration', default = '0.1',
-                help = 'Display frame time length seconds')
+                type = 'float', dest = 'duration', default = '83.3',
+                help = 'Display frame duration in milliseconds')
         self.OptionParser.add_option('--showframenum', action = 'store',
                 type = 'inkbool', dest = 'showframenum', default = 'false',
                 help = 'Display the frame number')
@@ -105,7 +105,6 @@ class HideLockSublayers(inkex.Effect):
         log = ''
         for node in self.svg.iter():
             tag = node.tag.split("}")[1]
-            log += '%s\n' % (tag)
             try:
                 idattr = node.attrib['id']
                 frametype = idattr[:-3]
@@ -113,7 +112,6 @@ class HideLockSublayers(inkex.Effect):
                 framenum = int(frame)
             except:
                 continue
-            log += 'idattr:%s type:%s frame:%s\n' % (idattr, frametype, frame)
             if fromframe <= framenum <= toframe:
                 if node.tag == inkex.addNS('g','svg'):
                     if frametype == 'f':
@@ -126,6 +124,8 @@ class HideLockSublayers(inkex.Effect):
                         self.setlockhide(node, hink, link)
                     if frametype == 'pencil':
                         self.setlockhide(node, hpencil, lpencil)
+                        
+                # update frame display duration for browser preview
                 if node.tag == inkex.addNS('set','svg'):
                     if frametype == 'init':
                         node.set('dur', '%sms' % (duration * (framenum - 1)))
@@ -133,6 +133,8 @@ class HideLockSublayers(inkex.Effect):
                         node.set('dur', '%sms' % (duration))
                     if frametype == 'off':
                         node.set('dur', '%sms' % ((duration * (toframe - 1)) - (duration * (framenum - 1)) + 1))
+                
+                # set frame number display
                 if node.tag == inkex.addNS('text', 'svg'):
                     if frametype == 'frametext':
                         if showframenum:
