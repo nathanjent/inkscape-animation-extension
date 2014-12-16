@@ -21,10 +21,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
-import sys, os.path
+import sys, os.path, inkex, simplestyle
 sys.path.append('/usr/share/inkscape/extensions')
-import inkex
-from simplestyle import *
 
 class ImportPenciltest(inkex.Effect):
     def __init__(self):
@@ -92,9 +90,8 @@ class ImportPenciltest(inkex.Effect):
         #set svg document dimensions
         svg.set('width', '%s' % (svgw))
         svg.set('height', '%s' % (svgh))
-        
-        width  = inkex.unittouu(svg.get('width'))
-        height = inkex.unittouu(svg.attrib['height'])
+        #latest version of inkscape requires update to the viewbox as well
+        svg.set('viewBox', '0 0 %s %s' % (svgw, svgh))
         
         for framenum in range(fromframe, toframe):
             i = format(framenum, '03d')
@@ -134,10 +131,11 @@ class ImportPenciltest(inkex.Effect):
             background.set(inkex.addNS('label', 'inkscape'), 'background')
             background.set(inkex.addNS('groupmode', 'inkscape'), 'layer')
             background.set(inkex.addNS('insensitive', 'sodipodi'), 'true')
+            #create a rect the same size as the document and fill with the selected color
             bgfill = inkex.etree.SubElement(background, 'rect', 
                 id='bgfill%s' % (i),
-                width='%d' % (width), 
-                height='%s' % (height),
+                width='%d' % (svgw), 
+                height='%s' % (svgh),
                 style='fill:%s' % (bgcolor))
             if importpencil:
                 pencil = inkex.etree.SubElement(layer, 'g', 

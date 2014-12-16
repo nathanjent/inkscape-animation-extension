@@ -9,3 +9,7 @@ option to choose the background rectangle's image
 
 
 Fix slowdown after extension is processed. Example: Output frames saves all the image files to the disk (you can see them in the file explorer) then inkscape hangs trying to reload the affected svg. The slowdown gets worse with additional frames.
+
+store animation begin and end times in the document definition for use in setting the duration
+
+multiple frame layers could be specified by storing the names in the document settings which could then be read by the extensions
