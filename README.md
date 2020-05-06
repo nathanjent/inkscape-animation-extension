@@ -11,13 +11,11 @@ movie file from these images.
 
 A simple example that I created in about a minute:
 
-![http://nathanjent.com/images/animationextensionexample.svg]
+![Sample Animation of Bouncing Ball](http://nathanjent.com/images/animationextensionexample.svg)
 
 (example can only be viewed in a browser which supports svg like Firefox or Chrome)
 
 ## USAGE
-
----
 
 Begin by using the 'Import/Create Frames' extension. I recommend starting with a
 new inkscape document when importing your pencil frames. But the new frames will
@@ -59,31 +57,19 @@ apply. This should give you a series of inked image frames to input into ffmpeg
 or maybe imagemagick and create a movie or gif file. The extension only outputs
 to png format. This is a limitation set by the Inkscape exporter.
 
-## HISTORY
-
----
-October 2014 -- Updated readme.
-June 2014 -- Changes made to use inkscape 'shell' mode. This means only one
-other instance of inkscape is run to process the frames instead of running an
-instance for each frame. I am hoping this will speed up frame processing.
-July 2014 -- Added options to display frame numbers and a frame duration option
-for previewing the animation in a supported browser like Firefox.
-
 ## TODO
 
----
-Fix bug with option to hide pencil layers during output.
-Add option to choose background image(s).
-Add option to choose sub-layer names.
+- [ ] Update extension for Inkscape 1.0
+- [ ] Fix bug with option to hide pencil layers during output.
+- [ ] Add option to choose background image(s).
+- [ ] Add option to choose sub-layer names.
 
 ## LICENSE
 
----
 GPL2
 
 ## Installation
 
----
 Copy the .inx and .py files into ~/.config/inkscape/extensions/ and restart
 inkscape. Or use the makefile to install.
 
