@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-  <_name>Set Frame Options</_name>
-  <id>com.nathanjent.effect.HideLockFrameLayers</id>
-  <dependency type="executable" location="extensions">hideframelayers.py</dependency>
-  <dependency type="executable" location="extensions">inkex.py</dependency>
-  <param name="fromframe" type="int" min="1" max="999" _gui-text="From frame">1</param>
-  <param name="toframe" type="int" min="1" max="999" _gui-text="To frame">12</param>
-  <param name="duration" type="float" min="0" max="999999" _gui-text="Frame duration (milliseconds)">83.3</param>
-  <param name="showframenum" type="boolean" _gui-text="Show frame numbers">false</param>
-  <param name="hframe" type="boolean" _gui-text="Hide frame layers">false</param>
-  <param name="lframe" type="boolean" _gui-text="Lock frame layers">false</param>
-  <param name="hink" type="boolean" _gui-text="Hide ink sublayers">false</param>
-  <param name="link" type="boolean" _gui-text="Lock ink sublayers">false</param>
-  <param name="hpaint" type="boolean" _gui-text="Hide paint sublayers">false</param>
-  <param name="lpaint" type="boolean" _gui-text="Lock paint sublayers">false</param>
-  <param name="hbackground" type="boolean" _gui-text="Hide background sublayers">false</param>
-  <param name="lbackground" type="boolean" _gui-text="Lock background sublayers">false</param>
-  <param name="hpencil" type="boolean" _gui-text="Hide pencil sublayers">false</param>
-  <param name="lpencil" type="boolean" _gui-text="Lock pencil sublayers">false</param>
-  <effect needs-live-preview="false">
-    <object-type>all</object-type>
-    <effects-menu>
-      <submenu _name="Animate"/>
-    </effects-menu>
-  </effect>
-  <script>
-    <command reldir="extensions" interpreter="python">hideframelayers.py</command>
-  </script>
+    <name>Set Frame Options</name>
+    <id>com.nathanjent.effect.HideLockFrameLayers</id>
+    <dependency type="file" location="inx">hideframelayers.py</dependency>
+    <param name="fromframe" type="int" min="1" max="999" gui-text="From frame">1</param>
+    <param name="toframe" type="int" min="1" max="999" gui-text="To frame">12</param>
+    <param name="duration" type="float" min="0" max="999999" gui-text="Frame duration (milliseconds)">83.3</param>
+    <param name="showframenum" type="boolean" gui-text="Show frame numbers">false</param>
+    <param name="hframe" type="boolean" gui-text="Hide frame layers">false</param>
+    <param name="lframe" type="boolean" gui-text="Lock frame layers">false</param>
+    <param name="hink" type="boolean" gui-text="Hide ink sublayers">false</param>
+    <param name="link" type="boolean" gui-text="Lock ink sublayers">false</param>
+    <param name="hpaint" type="boolean" gui-text="Hide paint sublayers">false</param>
+    <param name="lpaint" type="boolean" gui-text="Lock paint sublayers">false</param>
+    <param name="hbackground" type="boolean" gui-text="Hide background sublayers">false</param>
+    <param name="lbackground" type="boolean" gui-text="Lock background sublayers">false</param>
+    <param name="hpencil" type="boolean" gui-text="Hide pencil sublayers">false</param>
+    <param name="lpencil" type="boolean" gui-text="Lock pencil sublayers">false</param>
+    <effect needs-live-preview="false">
+        <object-type>all</object-type>
+        <effects-menu>
+            <submenu name="Animate"/>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">hideframelayers.py</command>
+    </script>
 </inkscape-extension>
 
