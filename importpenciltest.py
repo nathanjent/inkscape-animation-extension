@@ -25,11 +25,11 @@ It is part of the Inkscape animation extension.
 """
 import inkex
 
-
 class ImportPenciltest(inkex.InputExtension):
     """ Import from a series of images or generate the animation layers. """
 
     def add_arguments(self, pars):
+        """ Override """
         pars.add_argument(
             "--fromframe", type=int, dest="fromframe", default="1", help="From frame #",
         )
@@ -209,6 +209,5 @@ class ImportPenciltest(inkex.InputExtension):
             frametextspan.text = i
 
 
-# Create effect instance and apply it.
-effect = ImportPenciltest()
-effect.affect()
+if __name__ == "__main__":
+    ImportPenciltest().run()

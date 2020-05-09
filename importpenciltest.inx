@@ -4,7 +4,7 @@
     <id>com.nathanjent.effect.importpenciltest</id>
     <dependency type="file" location="inx">importpenciltest.py</dependency>
     <param name="tab" type="notebook">
-        <page name="Frames" gui_text="Frame Options">
+        <page name="Frames" gui-text="Frame Options">
             <param name="fromframe" type="int" min="1" max="999" gui-text="From frame">1</param>
             <param name="toframe" type="int" min="1" max="999" gui-text="To frame">12</param>
             <param name="duration" type="float" min="0" max="999999" gui-text="Frame duration (milliseconds)">83.3</param>
@@ -14,7 +14,7 @@
             <!-- TODO Load files in script, too.-->
             <param name="files" type="path" mode="files" filetypes="png,jpg" gui-text="Select frames:">my/path/to/files.png</param>
         </page>  
-        <page name="Background" gui_text="Frame Background Options">
+        <page name="Background" gui-text="Frame Background Options">
             <label>Set the backgrounds color.</label>
             <param name="bgcolor" type="color" appearance="colorbutton" gui-text="Set the color of the frame background">0</param>
         </page>
