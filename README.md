@@ -11,7 +11,7 @@ movie file from these images.
 
 A simple example that I created in about a minute:
 
-![Sample Animation of Bouncing Ball](http://nathanjent.com/images/animationextensionexample.svg)
+![Sample Animation of Bouncing Ball](./animationextensionexample.svg)
 
 (example can only be viewed in a browser which supports svg like Firefox or Chrome)
 
