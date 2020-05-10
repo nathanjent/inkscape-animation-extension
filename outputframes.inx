@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-    <name>Output Frames</name>
-    <id>com.nathanjent.effect.OutputFrames</id>
-    <dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
+    <name>Output Animation Frames</name>
+    <id>com.nathanjent.inkscape.output.OutputFrames</id>
     <dependency type="file" location="inx">outputframes.py</dependency>
     <param name="fromframe" type="int" min="1" max="999" gui-text="From frame">1</param>
     <param name="toframe" type="int" min="1" max="999" gui-text="To frame">10</param>
+        <!-- TODO Should probably ask for a filename and use that as the base with an incremented frame number-->
     <param name="directory" type="path" gui-text="Directory to save images to">my/path/</param>
     <param name="image" type="string" gui-text="Base output filename">frameout</param>
     <param name="hpencil" type="boolean" gui-text="Hide pencil sublayer during export?">true</param>
