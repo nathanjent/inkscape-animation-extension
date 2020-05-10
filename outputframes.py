@@ -14,6 +14,7 @@ import simplestyle
 from cStringIO import StringIO
 
 try:
+    # TODO replace process open with inkex.call to run Inkscape process
     from subprocess import Popen, PIPE
 
     bsubprocess = True
@@ -31,14 +32,14 @@ class OutputFrames(inkex.OutputExtension):
         )
         pars.add_argument(
             "--directory",
-            type="string",
+            type=str,
             dest="directory",
             default="./",
             help="Directory to save images to",
         )
         pars.add_argument(
             "--image",
-            type="string",
+            type=str,
             dest="image",
             default=None,
             help="Image name (without extension)",

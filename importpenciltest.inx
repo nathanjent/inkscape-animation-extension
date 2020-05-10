@@ -1,32 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-    <name>Create/Import Frames</name>
-    <id>com.nathanjent.effect.importpenciltest</id>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+    <name>Animation with Frames as Layers</name>
+    <id>com.nathanjent.inkscape.template.importframes</id>
     <dependency type="file" location="inx">importpenciltest.py</dependency>
-    <param name="tab" type="notebook">
-        <page name="Frames" gui-text="Frame Options">
-            <param name="fromframe" type="int" min="1" max="999" gui-text="From frame">1</param>
-            <param name="toframe" type="int" min="1" max="999" gui-text="To frame">12</param>
-            <param name="duration" type="float" min="0" max="999999" gui-text="Frame duration (milliseconds)">83.3</param>
-            <param name="svgw" type="int" min="1" max="9999" gui-text="Document width">560</param>
-            <param name="svgh" type="int" min="1" max="9999" gui-text="Document height">316</param>
-            <param name="importpencil" type="boolean" gui-text="Import pencil test to sublayer?">false</param>
-            <!-- TODO Load files in script, too.-->
-            <param name="files" type="path" mode="files" filetypes="png,jpg" gui-text="Select frames:">my/path/to/files.png</param>
-        </page>  
-        <page name="Background" gui-text="Frame Background Options">
-            <label>Set the backgrounds color.</label>
-            <param name="bgcolor" type="color" appearance="colorbutton" gui-text="Set the color of the frame background">0</param>
-        </page>
+    <label appearance="header">Frame Options</label>
+    <param name="from_frame"
+        gui-text="Start frame number:"
+        type="int"
+        min="1"
+        max="999"
+        >1</param>
+    <param name="to_frame"
+        gui-text="End frame number:"
+        type="int"
+        min="1"
+        max="999"
+        >12</param>
+    <param name="frame_rate"
+        gui-text="Frame rate (frames/second):"
+        type="float"
+        min="0"
+        max="999999" 
+        >12</param>
+    <param name="frame_images"
+        gui-text="Select frame images:"
+        type="path"
+        mode="files"
+        filetypes="png,jpg"
+        ></param>
+    <param name="background_image"
+        gui-text="Select background image:"
+        type="path"
+        mode="file"
+        filetypes="png,jpg"
+        ></param>
+    <param name="background_color"
+        gui-text="Set the color of the frame background:"
+        type="color"
+        appearance="colorbutton"
+        >0</param>
+    <spacer />
+    <label indent="1" appearance="header">Document Size</label>
+    <param name="size" gui-text="Document Size" type="optiongroup" appearance="combo">
+        <option value="Custom">Custom</option>
+        <option translatable="no" value="720x486">720x486 (NTSC)</option>
+        <option translatable="no" value="720x576">720x576 (PAL)</option>
+        <option translatable="no" value="1920x1080">1920x1080 (HDTV)</option>
+        <option translatable="no" value="3840x2160">3840x2160 (4K)</option>
+        <option translatable="no" value="7680x4320">7680x4320 (8K)</option>
     </param>
+    <!-- Maximum size is '16k' -->
+    <param gui-text="Custom Width:"
+        name="width"
+        type="int"
+        min="240"
+        max="15360"
+        >560</param>
+    <param gui-text="Custom Height:"
+        name="height"
+        type="int"
+        min="160"
+        max="8640"
+        >316</param>
+    <spacer />
     <effect needs-live-preview="false">
         <object-type>all</object-type>
         <effects-menu>
             <submenu name="Animate"/>
         </effects-menu>
     </effect>
+    <inkscape:templateinfo>
+        <inkscape:name>Animation Frame Layers</inkscape:name>
+        <inkscape:author>Nathan Jent</inkscape:author>
+        <inkscape:shortdesc>
+            Create a document that treats layers as frames.
+        </inkscape:shortdesc>
+        <inkscape:date>2020-05-09</inkscape:date>
+        <inkscape:keywords>animation frames</inkscape:keywords>
+    </inkscape:templateinfo>
     <script>
         <command location="inx" interpreter="python">importpenciltest.py</command>
     </script>
 </inkscape-extension>
-
