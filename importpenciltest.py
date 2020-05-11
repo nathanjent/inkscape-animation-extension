@@ -93,6 +93,7 @@ class ImportPenciltest(inkex.TemplateExtension):
         frame_images = opt.frame_images
         if frame_images is not None:
             frame_images = frame_images.split("|")
+
         background_image = pathlib.Path(opt.background_image).as_uri()
 
         background_color = opt.background_color
