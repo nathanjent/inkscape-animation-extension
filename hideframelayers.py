@@ -1,199 +1,255 @@
 #! /usr/bin/env python
 # coding=utf-8
+#
+# Copyright (C) 2014 Nathan Jent <nathanjent@nathanjent.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
 
 """
 Tool for hiding and locking frame layers.
 It is part of the Inkscape animation extension
 """
 
-import sys
 import inkex
-import simplestyle
-
-sys.path.append("/usr/share/inkscape/extensions")
+import elements
 
 
 class HideLockSublayers(inkex.EffectExtension):
+    """ Hide or lock frame layers """
+
     def add_arguments(self, pars):
         pars.add_argument(
-            "--hframe",
+            "--from_frame",
+            type=int,
+            dest="from_frame",
+            default="1",
+            help="Start frame number",
+        )
+        pars.add_argument(
+            "--to_frame",
+            type=int,
+            dest="to_frame",
+            default="12",
+            help="End frame number",
+        )
+        pars.add_argument(
+            "--frame_rate",
+            type=int,
+            dest="frame_rate",
+            default="12",
+            help="Frame rate",
+        )
+        pars.add_argument(
+            "--show_frame_numbers",
             type=inkex.Boolean,
-            dest="hframe",
-            default="false",
+            dest="show_frame_numbers",
+            default=False,
+            help="Display the frame number",
+        )
+        pars.add_argument(
+            "--hide_frame_layers",
+            type=inkex.Boolean,
+            dest="hide_frame_layers",
+            default=False,
             help="Hide all frame layers",
         )
         pars.add_argument(
-            "--lframe",
+            "--lock_frame_layers",
             type=inkex.Boolean,
-            dest="lframe",
-            default="false",
+            dest="lock_frame_layers",
+            default=False,
             help="Lock all frame layers",
         )
         pars.add_argument(
-            "--hink",
+            "--hide_ink_layers",
             type=inkex.Boolean,
-            dest="hink",
-            default="false",
+            dest="hide_ink_layers",
+            default=False,
             help="Hide all ink sublayers",
         )
         pars.add_argument(
-            "--link",
+            "--lock_ink_layers",
             type=inkex.Boolean,
-            dest="link",
-            default="false",
+            dest="lock_ink_layers",
+            default=False,
             help="Lock all ink sublayers",
         )
         pars.add_argument(
-            "--hpaint",
+            "--hide_paint_layers",
             type=inkex.Boolean,
-            dest="hpaint",
-            default="false",
+            dest="hide_paint_layers",
+            default=False,
             help="Hide all paint sublayers",
         )
         pars.add_argument(
-            "--lpaint",
+            "--lock_paint_layers",
             type=inkex.Boolean,
-            dest="lpaint",
-            default="false",
+            dest="lock_paint_layers",
+            default=False,
             help="Lock all paint sublayers",
         )
         pars.add_argument(
-            "--hbackground",
+            "--hide_background_layers",
             type=inkex.Boolean,
-            dest="hbackground",
-            default="false",
+            dest="hide_background_layers",
+            default=False,
             help="Hide all background sublayers",
         )
         pars.add_argument(
-            "--lbackground",
+            "--lock_background_layers",
             type=inkex.Boolean,
-            dest="lbackground",
-            default="false",
+            dest="lock_background_layers",
+            default=False,
             help="Lock all background sublayers",
         )
         pars.add_argument(
-            "--hpencil",
+            "--hide_pencil_layers",
             type=inkex.Boolean,
-            dest="hpencil",
-            default="false",
+            dest="hide_pencil_layers",
+            default=False,
             help="Hide all pencil sublayers",
         )
         pars.add_argument(
-            "--lpencil",
+            "--lock_pencil_layers",
             type=inkex.Boolean,
-            dest="lpencil",
-            default="false",
+            dest="lock_pencil_layers",
+            default=False,
             help="Lock all pencil sublayers",
         )
-        pars.add_argument(
-            "--fromframe", type=int, dest="fromframe", default="1", help="From frame #",
-        )
-        pars.add_argument(
-            "--toframe", type=int, dest="toframe", default="12", help="From frame #",
-        )
-        pars.add_argument(
-            "--duration",
-            type=float,
-            dest="duration",
-            default="83.3",
-            help="Display frame duration in milliseconds",
-        )
-        pars.add_argument(
-            "--showframenum",
-            type=inkex.Boolean,
-            dest="showframenum",
-            default="false",
-            help="Display the frame number",
-        )
 
-    def setlockhide(self, node, hide, lock):
-        if lock:
+    def layers(self, document=None):
+        """ iterate over layers """
+        if document is None:
+            document = self.document
+        for node in document.getroot().iterchildren():
+            if isinstance(node, inkex.Layer) and node.label:
+                yield (node.label, node)
+
+    def effect(self):
+        """ Apply the effect """
+        opt = self.options
+        duration_ms = 1000 / opt.frame_rate
+
+        for (label, layer) in self.layers():
+            *frame_type, frame_num_str = label.split("-")
+            frame_type = " ".join(frame_type)
+            if frame_type == "frame":
+                frame_num = int(frame_num_str)
+                if opt.from_frame <= frame_num <= opt.to_frame:
+                    set_hidden_locked(
+                        layer, opt.hide_frame_layers, opt.lock_frame_layers
+                    )
+
+                    # update frame display duration for browser preview
+                    for sub_node in layer.iterchildren():
+                        set_node_id = sub_node.get("id")
+                        set_node_type, *_ = set_node_id.split("-")
+                        if isinstance(sub_node, inkex.Layer) and sub_node.label:
+                            sub_label = sub_node.label
+                            if sub_label == "background":
+                                set_hidden_locked(
+                                    sub_node,
+                                    opt.hide_background_layers,
+                                    opt.lock_background_layers,
+                                )
+                            if sub_label == "paint":
+                                set_hidden_locked(
+                                    sub_node, opt.hide_paint_layers, opt.lock_paint_layers
+                                )
+                            if sub_label == "ink":
+                                set_hidden_locked(
+                                    sub_node, opt.hide_ink_layers, opt.lock_ink_layers
+                                )
+                            if sub_label == "pencils":
+                                set_hidden_locked(
+                                    sub_node, opt.hide_pencil_layers, opt.lock_pencil_layers
+                                )
+                        if isinstance(sub_node, elements.SetElement):
+                            if set_node_type == "init":
+                                sub_node.set(
+                                    "dur", "%sms" % (duration_ms * (frame_num - 1))
+                                )
+                            if set_node_type == "on":
+                                sub_node.set("dur", "%sms" % (duration_ms))
+                            if frame_type == "off":
+                                sub_node.set(
+                                    "dur",
+                                    "%sms"
+                                    % (
+                                        (duration_ms * (opt.to_frame - 1))
+                                        - (duration_ms * (frame_num - 1))
+                                        + 1
+                                    ),
+                                )
+                        if isinstance(sub_node, inkex.TextElement):
+                            # set frame number display
+                            if set_node_type == "frametext":
+                                if opt.show_frame_numbers:
+                                    sub_node.set(
+                                        "style",
+                                        """
+                                        display:inline;
+                                        font-size:18px;
+                                        font-style:normal;
+                                        font-weight:normal;
+                                        line-height:125%;
+                                        letter-spacing:0px;
+                                        word-spacing:0px;
+                                        fill:#000000;
+                                        fill-opacity:0.3;
+                                        stroke:none;
+                                        font-family:Sans
+                                        """,
+                                    )
+                                else:
+                                    sub_node.set(
+                                        "style",
+                                        """
+                                        display:none;
+                                        font-size:18px;
+                                        font-style:normal;
+                                        font-weight:normal;
+                                        line-height:125%;
+                                        letter-spacing:0px;
+                                        word-spacing:0px;
+                                        fill:#000000;
+                                        fill-opacity:0.3;
+                                        stroke:none;
+                                        font-family:Sans
+                                        """,
+                                    )
+
+
+def set_hidden_locked(node, hidden, locked):
+    """ Set layer hidden or locked """
+    if isinstance(node, inkex.Layer):
+        if locked:
             node.set(inkex.addNS("insensitive", "sodipodi"), "true")
         else:
             try:
                 del node.attrib[inkex.addNS("insensitive", "sodipodi")]
             except KeyError:
                 pass
-        if hide:
+        # FIXME don't lose other existing styles
+        style_attr = node.get("style")
+        if hidden:
             node.set("style", "display:none")
         else:
             node.set("style", "display:inline")
 
-    def effect(self):
-        self.svg = self.document.getroot()
-
-        fromframe = self.options.fromframe
-        toframe = self.options.toframe
-        duration = self.options.duration
-        hframe = self.options.hframe
-        lframe = self.options.lframe
-        hink = self.options.hink
-        link = self.options.link
-        hpaint = self.options.hpaint
-        lpaint = self.options.lpaint
-        hbackground = self.options.hbackground
-        lbackground = self.options.lbackground
-        hpencil = self.options.hpencil
-        lpencil = self.options.lpencil
-        showframenum = self.options.showframenum
-
-        log = ""
-        for node in self.svg.iter():
-            tag = node.tag.split("}")[1]
-            try:
-                idattr = node.attrib["id"]
-                frametype = idattr[:-3]
-                frame = idattr[-3:]
-                framenum = int(frame)
-            except:
-                continue
-            if fromframe <= framenum <= toframe:
-                if node.tag == inkex.addNS("g", "svg"):
-                    if frametype == "f":
-                        self.setlockhide(node, hframe, lframe)
-                    if frametype == "bg":
-                        self.setlockhide(node, hbackground, lbackground)
-                    if frametype == "paint":
-                        self.setlockhide(node, hpaint, lpaint)
-                    if frametype == "ink":
-                        self.setlockhide(node, hink, link)
-                    if frametype == "pencil":
-                        self.setlockhide(node, hpencil, lpencil)
-
-                # update frame display duration for browser preview
-                if node.tag == inkex.addNS("set", "svg"):
-                    if frametype == "init":
-                        node.set("dur", "%sms" % (duration * (framenum - 1)))
-                    if frametype == "on":
-                        node.set("dur", "%sms" % (duration))
-                    if frametype == "off":
-                        node.set(
-                            "dur",
-                            "%sms"
-                            % (
-                                (duration * (toframe - 1))
-                                - (duration * (framenum - 1))
-                                + 1
-                            ),
-                        )
-
-                # set frame number display
-                if node.tag == inkex.addNS("text", "svg"):
-                    if frametype == "frametext":
-                        if showframenum:
-                            node.set(
-                                "style",
-                                "display:inline;font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:0.3;stroke:none;font-family:Sans",
-                            )
-                        else:
-                            node.set(
-                                "style",
-                                "display:none;font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:0.3;stroke:none;font-family:Sans",
-                            )
-        # uncomment next line to see log
-        # inkex.errormsg(log)
-
 
 if __name__ == "__main__":
-    effect = HideLockSublayers()
-    effect.affect()
+    HideLockSublayers().run()

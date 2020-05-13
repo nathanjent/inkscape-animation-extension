@@ -66,7 +66,7 @@
     <effect needs-live-preview="false">
         <object-type>all</object-type>
         <effects-menu>
-            <submenu name="Animate"/>
+            <submenu name="Animation Layers"/>
         </effects-menu>
     </effect>
     <inkscape:templateinfo>

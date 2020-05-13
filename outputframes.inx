@@ -3,18 +3,40 @@
     <name>Output Animation Frames</name>
     <id>com.nathanjent.inkscape.output.OutputFrames</id>
     <dependency type="file" location="inx">outputframes.py</dependency>
-    <param name="fromframe" type="int" min="1" max="999" gui-text="From frame">1</param>
-    <param name="toframe" type="int" min="1" max="999" gui-text="To frame">10</param>
+    <param name="from_frame"
+        gui-text="Start frame number:"
+        type="int"
+        min="1"
+        max="999"
+        >1</param>
+    <param name="to_frame"
+        gui-text="End frame number:"
+        type="int"
+        min="1"
+        max="999"
+        >10</param>
         <!-- TODO Should probably ask for a filename and use that as the base with an incremented frame number-->
-    <param name="directory" type="path" gui-text="Directory to save images to">my/path/</param>
-    <param name="image" type="string" gui-text="Base output filename">frameout</param>
-    <param name="hpencil" type="boolean" gui-text="Hide pencil sublayer during export?">true</param>
+    <param name="base_file"
+        gui-text="Base filename to save frame images:"
+        type="file"
+        >my/path/</param>
+    <param name="hide_pencil"
+        gui-text="Hide pencil sublayer during export?:"
+        type="boolean"
+        >True</param>
     <effect needs-live-preview="false">
         <object-type>all</object-type>
         <effects-menu>
-            <submenu name="Animate"/>
+            <submenu name="Animation Layers"/>
         </effects-menu>
     </effect>
+    <output>
+        <extension>.png</extension>
+        <mimetype>image/png</mimetype>
+        <filetypename>Frames as PNG sequence (*.png)</filetypename>
+        <filetypetooltip>Save frame layers as a PNG image sequence</filetypetooltip>
+    </output>
+
     <script>
         <command location="inx" interpreter="python">outputframes.py</command>
     </script>
