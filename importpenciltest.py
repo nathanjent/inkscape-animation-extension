@@ -124,7 +124,7 @@ class ImportPenciltest(inkex.TemplateExtension):
             # Add SMIL animation timing for browser preview
 
             # set initial state of layer
-            set_display_init = elements.SetCssElement.new(
+            set_display_init = elements.SetElement.new(
                 "display",
                 "none",
                 id="init-%s" % (frame_fmt_num),
@@ -137,7 +137,7 @@ class ImportPenciltest(inkex.TemplateExtension):
 
             # set onstate of layer
             # holds frame for 1 duration
-            set_display_on = elements.SetCssElement.new(
+            set_display_on = elements.SetElement.new(
                 "display",
                 "inline",
                 id="on-%s" % (frame_fmt_num),
@@ -148,7 +148,7 @@ class ImportPenciltest(inkex.TemplateExtension):
             frame_layer.add(set_display_on)
 
             # Set offstate of layer
-            set_display_off = elements.SetCssElement.new(
+            set_display_off = elements.SetElement.new(
                 "display",
                 "none",
                 id="off-%s" % (frame_fmt_num),

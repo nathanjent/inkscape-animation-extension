@@ -31,28 +31,7 @@ class SetElement(inkex.BaseElement):
     tag_name = "set"
 
     @classmethod
-    def new(cls, attr_name, to_value, attr_type, *children, **attrs):
+    def new(cls, attr_name, to_value, *children, **attrs):
         attrs["attributeName"] = attr_name
         attrs["to"] = to_value
-        attrs["attributeType"] = attr_type
         return super(SetElement, cls).new(*children, **attrs)
-
-
-class SetCssElement(SetElement):
-    """Set element for CSS attributes"""
-
-    @classmethod
-    def new(cls, attr_name, to_value, *children, **attrs):
-        return super(SetCssElement, cls).new(
-            attr_name, to_value, "CSS", *children, **attrs
-        )
-
-
-class SetXmlElement(SetElement):
-    """Set element for XML attributes"""
-
-    @classmethod
-    def new(cls, attr_name, to_value, *children, **attrs):
-        return super(SetXmlElement, cls).new(
-            attr_name, to_value, "XML", *children, **attrs
-        )
