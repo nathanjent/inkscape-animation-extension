@@ -130,13 +130,13 @@ class HideLockSublayers(inkex.EffectExtension):
             help="Lock all pencil sublayers",
         )
 
-    def layers(self, document=None):
+    def layers(self, node=None):
         """ iterate over layers """
-        if document is None:
-            document = self.document
-        for node in document.getroot().iterchildren():
-            if isinstance(node, inkex.Layer) and node.label:
-                yield (node.label, node)
+        if node is None:
+            node = self.document.getroot()
+        for sub_node in node.iterchildren():
+            if isinstance(sub_node, inkex.Layer) and sub_node.label:
+                yield (sub_node.label, sub_node)
 
     def effect(self):
         """ Apply the effect """
@@ -155,34 +155,37 @@ class HideLockSublayers(inkex.EffectExtension):
 
                     # update frame display duration for browser preview
                     for sub_node in layer.iterchildren():
-                        set_node_id = sub_node.get("id")
-                        set_node_type, *_ = set_node_id.split("-")
+                        sub_node_id = sub_node.get("id")
+                        sub_node_type, *_ = sub_node_id.split("-")
                         if isinstance(sub_node, inkex.Layer) and sub_node.label:
-                            sub_label = sub_node.label
-                            if sub_label == "background":
+                            if sub_node.label == "background":
                                 set_hidden_locked(
                                     sub_node,
                                     opt.hide_background_layers,
                                     opt.lock_background_layers,
                                 )
-                            if sub_label == "paint":
+                            if sub_node.label == "paint":
                                 set_hidden_locked(
-                                    sub_node, opt.hide_paint_layers, opt.lock_paint_layers
+                                    sub_node,
+                                    opt.hide_paint_layers,
+                                    opt.lock_paint_layers,
                                 )
-                            if sub_label == "ink":
+                            if sub_node.label == "ink":
                                 set_hidden_locked(
                                     sub_node, opt.hide_ink_layers, opt.lock_ink_layers
                                 )
-                            if sub_label == "pencils":
+                            if sub_node.label == "pencils":
                                 set_hidden_locked(
-                                    sub_node, opt.hide_pencil_layers, opt.lock_pencil_layers
+                                    sub_node,
+                                    opt.hide_pencil_layers,
+                                    opt.lock_pencil_layers,
                                 )
                         if isinstance(sub_node, elements.SetElement):
-                            if set_node_type == "init":
+                            if sub_node_type == "init":
                                 sub_node.set(
                                     "dur", "%sms" % (duration_ms * (frame_num - 1))
                                 )
-                            if set_node_type == "on":
+                            if sub_node_type == "on":
                                 sub_node.set("dur", "%sms" % (duration_ms))
                             if frame_type == "off":
                                 sub_node.set(
@@ -196,41 +199,11 @@ class HideLockSublayers(inkex.EffectExtension):
                                 )
                         if isinstance(sub_node, inkex.TextElement):
                             # set frame number display
-                            if set_node_type == "frametext":
+                            if sub_node_type == "frametext":
                                 if opt.show_frame_numbers:
-                                    sub_node.set(
-                                        "style",
-                                        """
-                                        display:inline;
-                                        font-size:18px;
-                                        font-style:normal;
-                                        font-weight:normal;
-                                        line-height:125%;
-                                        letter-spacing:0px;
-                                        word-spacing:0px;
-                                        fill:#000000;
-                                        fill-opacity:0.3;
-                                        stroke:none;
-                                        font-family:Sans
-                                        """,
-                                    )
+                                    sub_node.style["display"] = "inline"
                                 else:
-                                    sub_node.set(
-                                        "style",
-                                        """
-                                        display:none;
-                                        font-size:18px;
-                                        font-style:normal;
-                                        font-weight:normal;
-                                        line-height:125%;
-                                        letter-spacing:0px;
-                                        word-spacing:0px;
-                                        fill:#000000;
-                                        fill-opacity:0.3;
-                                        stroke:none;
-                                        font-family:Sans
-                                        """,
-                                    )
+                                    sub_node.style["display"] = "none"
 
 
 def set_hidden_locked(node, hidden, locked):
@@ -243,12 +216,10 @@ def set_hidden_locked(node, hidden, locked):
                 del node.attrib[inkex.addNS("insensitive", "sodipodi")]
             except KeyError:
                 pass
-        # FIXME don't lose other existing styles
-        style_attr = node.get("style")
         if hidden:
-            node.set("style", "display:none")
+            node.style["display"] = "none"
         else:
-            node.set("style", "display:inline")
+            node.style["display"] = "inline"
 
 
 if __name__ == "__main__":

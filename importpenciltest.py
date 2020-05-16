@@ -87,9 +87,8 @@ class ImportPenciltest(inkex.TemplateExtension):
         (width, _, height, _) = self.get_size()
 
         # Including images are optional
-        frame_images = opt.frame_images
-        if frame_images is not None:
-            frame_images = frame_images.split("|")
+        if opt.frame_images is not None:
+            opt.frame_images = opt.frame_images.split("|")
 
         # Rename default layer to "Background"
         default_layer = svg.getElementById("layer1")
@@ -109,9 +108,9 @@ class ImportPenciltest(inkex.TemplateExtension):
         for frame_number in range(opt.from_frame, opt.to_frame + 1):
             frame_fmt_num = format(frame_number, "03d")
 
-            if frame_images is not None:
-                if index < len(frame_images):
-                    frame_image = frame_images[index]
+            if opt.frame_images is not None:
+                if index < len(opt.frame_images):
+                    frame_image = opt.frame_images[index]
                 index += 1
 
             # Create a new frame layer.
@@ -203,21 +202,13 @@ class ImportPenciltest(inkex.TemplateExtension):
                 y="14",
                 style="""
                     display:none;
-                    font-size:18px;
-                    font-style:normal;
-                    font-weight:normal;
-                    line-height:125%;
-                    letter-spacing:0px;
-                    word-spacing:0px;
-                    fill:#000000;
                     fill-opacity:0.3;
-                    stroke:none;
-                    font-family:Sans
+                    font-family:monospace
                     """,
             )
             frame_layer.add(frame_number_text)
             frame_num_tspan = inkex.Tspan(
-                x="0", y="14", id="tspan%s" % (frame_number), text=frame_fmt_num,
+                frame_fmt_num, x="0", y="14", id="tspan%s" % (frame_number),
             )
             frame_number_text.add(frame_num_tspan)
 
