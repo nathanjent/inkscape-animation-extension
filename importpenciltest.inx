@@ -65,9 +65,7 @@
     <spacer />
     <effect needs-live-preview="false">
         <object-type>all</object-type>
-        <effects-menu>
-            <submenu name="Animation Layers"/>
-        </effects-menu>
+        <effects-menu hidden="true" />
     </effect>
     <inkscape:templateinfo>
         <inkscape:name>Animation Frame Layers</inkscape:name>

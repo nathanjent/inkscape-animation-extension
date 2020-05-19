@@ -143,67 +143,91 @@ class HideLockSublayers(inkex.EffectExtension):
         opt = self.options
         duration_ms = 1000 / opt.frame_rate
 
-        for (label, layer) in self.layers():
-            *frame_type, frame_num_str = label.split("-")
-            frame_type = " ".join(frame_type)
-            if frame_type == "frame":
+        to_frame_duration = duration_ms * opt.to_frame
+
+        # Hide or lock layers and sublayers
+        xpath_layers = (
+            "/svg:svg//*[name()='g'"
+            " and @inkscape:groupmode='layer'"
+            " and starts-with(@id, 'frame-')"
+            " or starts-with(@id, 'ink-')"
+            " or starts-with(@id, 'paint-')"
+            " or starts-with(@id, 'pencil-')"
+            " or starts-with(@id, 'background-')"
+            "][@id]"
+        )
+        for layer in self.svg.xpath(xpath_layers):
+            *layer_type, frame_num_str = layer.get("id").split("-")
+            layer_type = " ".join(layer_type)
+            try:
                 frame_num = int(frame_num_str)
-                if opt.from_frame <= frame_num <= opt.to_frame:
+            except ValueError:
+                continue
+
+            if opt.from_frame <= frame_num <= opt.to_frame:
+                if layer_type == "frame":
                     set_hidden_locked(
                         layer, opt.hide_frame_layers, opt.lock_frame_layers
                     )
+                if layer_type == "background":
+                    set_hidden_locked(
+                        layer, opt.hide_background_layers, opt.lock_background_layers,
+                    )
+                if layer_type == "paint":
+                    set_hidden_locked(
+                        layer, opt.hide_paint_layers, opt.lock_paint_layers,
+                    )
+                if layer_type == "ink":
+                    set_hidden_locked(layer, opt.hide_ink_layers, opt.lock_ink_layers)
+                if layer_type == "pencils":
+                    set_hidden_locked(
+                        layer, opt.hide_pencil_layers, opt.lock_pencil_layers,
+                    )
 
-                    # update frame display duration for browser preview
-                    for sub_node in layer.iterchildren():
-                        sub_node_id = sub_node.get("id")
-                        sub_node_type, *_ = sub_node_id.split("-")
-                        if isinstance(sub_node, inkex.Layer) and sub_node.label:
-                            if sub_node.label == "background":
-                                set_hidden_locked(
-                                    sub_node,
-                                    opt.hide_background_layers,
-                                    opt.lock_background_layers,
-                                )
-                            if sub_node.label == "paint":
-                                set_hidden_locked(
-                                    sub_node,
-                                    opt.hide_paint_layers,
-                                    opt.lock_paint_layers,
-                                )
-                            if sub_node.label == "ink":
-                                set_hidden_locked(
-                                    sub_node, opt.hide_ink_layers, opt.lock_ink_layers
-                                )
-                            if sub_node.label == "pencils":
-                                set_hidden_locked(
-                                    sub_node,
-                                    opt.hide_pencil_layers,
-                                    opt.lock_pencil_layers,
-                                )
-                        if isinstance(sub_node, elements.SetElement):
-                            if sub_node_type == "init":
-                                sub_node.set(
-                                    "dur", "%sms" % (duration_ms * (frame_num - 1))
-                                )
-                            if sub_node_type == "on":
-                                sub_node.set("dur", "%sms" % (duration_ms))
-                            if frame_type == "off":
-                                sub_node.set(
-                                    "dur",
-                                    "%sms"
-                                    % (
-                                        (duration_ms * (opt.to_frame - 1))
-                                        - (duration_ms * (frame_num - 1))
-                                        + 1
-                                    ),
-                                )
-                        if isinstance(sub_node, inkex.TextElement):
-                            # set frame number display
-                            if sub_node_type == "frametext":
-                                if opt.show_frame_numbers:
-                                    sub_node.style["display"] = "inline"
-                                else:
-                                    sub_node.style["display"] = "none"
+        # Update frame display duration for browser preview
+        xpath_set_nodes = (
+            "/svg:svg//*[name()='set'"
+            " and starts-with(@id, 'init-')"
+            " or starts-with(@id, 'on-')"
+            " or starts-with(@id, 'off-')"
+            "][@id]"
+        )
+        for set_node in self.svg.xpath(xpath_set_nodes):
+            *set_node_type, frame_num_str = set_node.get("id").split("-")
+            set_node_type = " ".join(set_node_type)
+            try:
+                frame_num = int(frame_num_str)
+            except ValueError:
+                continue
+            if opt.from_frame <= frame_num <= opt.to_frame:
+                if set_node_type == "init":
+                    adjusted_init_duration = duration_ms * (frame_num - 1)
+                    set_node.set("dur", f"{adjusted_init_duration}ms")
+                if set_node_type == "on":
+                    set_node.set("dur", f"{duration_ms}ms")
+                if set_node_type == "off":
+                    adjusted_off_duration = (
+                        to_frame_duration - (duration_ms * (frame_num - 1)) + 1
+                    )
+                    set_node.set("dur", f"{adjusted_off_duration}ms")
+
+        # Hide/show frame numbers
+        xpath_frame_nodes = (
+            "/svg:svg//*[name()='text' and starts-with(@id, 'frametext-')][@id]"
+        )
+        for frame_node in self.svg.xpath(xpath_frame_nodes):
+            *frame_node_type, frame_num_str = frame_node.get("id").split("-")
+            frame_node_type = " ".join(frame_node_type)
+            try:
+                frame_num = int(frame_num_str)
+            except ValueError:
+                continue
+            if opt.from_frame <= frame_num <= opt.to_frame:
+                # set frame number display
+                if opt.show_frame_numbers:
+                    frame_node.style["display"] = "inline"
+                else:
+                    frame_node.style["display"] = "none"
 
 
 def set_hidden_locked(node, hidden, locked):
