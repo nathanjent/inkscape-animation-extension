@@ -109,9 +109,8 @@ class ImportPenciltest(inkex.TemplateExtension):
         for frame_number in range(opt.from_frame, opt.to_frame + 1):
             frame_num_fmt = format(frame_number, "03d")
 
-            if opt.frame_images is not None:
-                if index < len(opt.frame_images):
-                    frame_image = opt.frame_images[index]
+            if index < len(opt.frame_images) -1:
+                frame_image = opt.frame_images[index]
                 index += 1
 
             # Create a new frame layer.
@@ -176,20 +175,21 @@ class ImportPenciltest(inkex.TemplateExtension):
             )
             frame_background.add(frame_background_rect)
 
-            if frame_image is not None:
-                # Add frame image as pencils layer
-                frame_image_layer = inkex.Layer.new(
-                    "pencils", id=f"pencils-{frame_num_fmt}", style="opacity:0.4",
-                )
-                frame_layer.add(frame_image_layer)
-
-                # Create image set to the view size
+            if frame_image:
                 image_path = pathlib.Path(frame_image)
-                pencil_image = inkex.Image(id=f"pimage-{frame_num_fmt}")
-                pencil_image.set("width", width)
-                pencil_image.set("height", height)
-                pencil_image.set("xlink:href", str(image_path.as_uri()))
-                frame_image_layer.add(pencil_image)
+                if image_path.is_file():
+                    # Add frame image as pencils layer
+                    frame_image_layer = inkex.Layer.new(
+                        "pencils", id=f"pencils-{frame_num_fmt}", style="opacity:0.4",
+                    )
+                    frame_layer.add(frame_image_layer)
+
+                    # Create image set to the view size
+                    pencil_image = inkex.Image(id=f"pimage-{frame_num_fmt}")
+                    pencil_image.set("width", width)
+                    pencil_image.set("height", height)
+                    pencil_image.set("xlink:href", str(image_path.as_uri()))
+                    frame_image_layer.add(pencil_image)
 
             paint_layer = inkex.Layer.new("paint", id=f"paint-{frame_num_fmt}")
             frame_layer.add(paint_layer)
@@ -200,13 +200,19 @@ class ImportPenciltest(inkex.TemplateExtension):
             # Add the frame number to the layer
             frame_number_text = inkex.TextElement(
                 id=f"frametext-{frame_num_fmt}",
-                x="0",
-                y="14",
-                style="display:none;fill-opacity:0.3;font-family:monospace",
+                stroke="white",
+                style=(
+                    "display:none;"
+                    "fill-opacity:0.4;"
+                    f"font:bold {width * 0.20}px monospace"
+                ),
             )
             frame_layer.add(frame_number_text)
             frame_num_tspan = inkex.Tspan(
-                frame_num_fmt, x="0", y="14", id=f"frametspan-{frame_num_fmt}",
+                frame_num_fmt,
+                x="0",
+                y=f"{height * 0.4}",
+                id=f"frametspan-{frame_num_fmt}",
             )
             frame_number_text.add(frame_num_tspan)
 
