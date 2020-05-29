@@ -24,7 +24,6 @@ It is part of the Inkscape animation extension
 """
 
 import inkex
-import elements
 
 
 class HideLockSublayers(inkex.EffectExtension):

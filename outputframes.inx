@@ -3,6 +3,12 @@
     <name>Output Animation Frames</name>
     <id>com.nathanjent.inkscape.output.OutputFrames</id>
     <dependency type="file" location="inx">outputframes.py</dependency>
+    <param name="output_file"
+        gui-text="Select base filename for output:"
+        type="path"
+        mode="file_new"
+        filetypes="png"
+        ></param>
     <param name="from_frame"
         gui-text="Start frame number:"
         type="int"
@@ -15,20 +21,26 @@
         min="1"
         max="999"
         >10</param>
-    <param name="hide_pencil"
-        gui-text="Hide pencil sublayer during export?:"
+    <param name="include_pencils"
+        gui-text="Include pencils sublayer?:"
         type="boolean"
         >true</param>
-    <param name="background"
-        gui-text="Add background color:"
+    <param name="include_background"
+        gui-text="Include background sublayer?:"
         type="boolean"
         >false</param>
-    <output>
-        <extension>.png</extension>
-        <mimetype>image/png</mimetype>
-        <filetypename>Layer Frames to PNG sequence (*.png)</filetypename>
-        <filetypetooltip>Save frame layers as a PNG image sequence</filetypetooltip>
-    </output>
+    <param name="background_opacity"
+        gui-text="Document background opacity:"
+        min="0.0"
+        max="1.0"
+        type="float"
+        >1.0</param>
+    <effect needs-live-preview="false">
+        <object-type>all</object-type>
+        <effects-menu>
+            <submenu name="Animation Layers"/>
+        </effects-menu>
+    </effect>
 
     <script>
         <command location="inx" interpreter="python">outputframes.py</command>
