@@ -151,7 +151,7 @@ class ImportPenciltest(inkex.TemplateExtension):
             frame_layer.add(set_display_on)
 
             # Set offstate of layer
-            off_duration = animation_length - initial_duration - duration_ms
+            off_duration = animation_length - ((frame_number + 1) * duration_ms)
             # The final off set element triggers the animation to loop
             # back to the first frame's init set element
             # If the duration is zero then it won't trigger the loop back
