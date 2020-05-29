@@ -48,101 +48,101 @@ at time 0 and at the off state of the last frame.
 
 Try this simple example in the browser:
 
-<svg width="120" height="120"  viewBox="0 0 120 120"
-     xmlns="http://www.w3.org/2000/svg" version="1.1"
-     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg width="120" height="120"  viewBox="0 0 120 120"
+        xmlns="http://www.w3.org/2000/svg" version="1.1"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <g id="frame_001">
-        <set
-            id="init_001"
-            begin="0ms; off_003.end"
-            dur="0ms"
-            attributeName="display"
-            to="none" />
-        <set
-            id="on_001"
-            begin="init_001.end"
-            dur="100ms"
-            attributeName="display"
-            to="inline" />
-        <set
-            id="off_001"
-            begin="on_001.end"
-            dur="200ms"
-            attributeName="display"
-            to="none" />
-        <text
-            id="frametext_001"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_001">001</tspan>
-        </text>
-    </g>
+        <g id="frame_001">
+            <set
+                id="init_001"
+                begin="0ms; off_003.end"
+                dur="0ms"
+                attributeName="display"
+                to="none" />
+            <set
+                id="on_001"
+                begin="init_001.end"
+                dur="100ms"
+                attributeName="display"
+                to="inline" />
+            <set
+                id="off_001"
+                begin="on_001.end"
+                dur="200ms"
+                attributeName="display"
+                to="none" />
+            <text
+                id="frametext_001"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_001">001</tspan>
+            </text>
+        </g>
 
-    <g id="frame_002">
-        <set
-            id="init_002"
-            begin="0ms; off_003.end"
-            dur="100ms"
-            attributeName="display"
-            to="none" />
-        <set
-            id="on_002"
-            begin="init_002.end"
-            dur="100ms"
-            attributeName="display"
-            to="inline" />
-        <set
-            id="off_002"
-            begin="on_002.end"
-            dur="100ms"
-            attributeName="display"
-            to="none" />
-        <text
-            id="frametext_002"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_002">002</tspan>
-        </text>
-    </g>
+        <g id="frame_002">
+            <set
+                id="init_002"
+                begin="0ms; off_003.end"
+                dur="100ms"
+                attributeName="display"
+                to="none" />
+            <set
+                id="on_002"
+                begin="init_002.end"
+                dur="100ms"
+                attributeName="display"
+                to="inline" />
+            <set
+                id="off_002"
+                begin="on_002.end"
+                dur="100ms"
+                attributeName="display"
+                to="none" />
+            <text
+                id="frametext_002"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_002">002</tspan>
+            </text>
+        </g>
 
-    <g id="frame_003">
-        <set
-            id="init_003"
-            begin="0ms; off_003.end"
-            dur="200ms"
-            attributeName="display"
-            to="none" />
-        <set
-            id="on_003"
-            begin="init_003.end"
-            dur="100ms"
-            attributeName="display"
-            to="inline" />
-        <set
-            id="off_003"
-            begin="on_003.end"
-            dur="1ms"
-            attributeName="display"
-            to="none" />
-        <text
-            id="frametext_003"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_003">003</tspan>
-        </text>
-    </g>
+        <g id="frame_003">
+            <set
+                id="init_003"
+                begin="0ms; off_003.end"
+                dur="200ms"
+                attributeName="display"
+                to="none" />
+            <set
+                id="on_003"
+                begin="init_003.end"
+                dur="100ms"
+                attributeName="display"
+                to="inline" />
+            <set
+                id="off_003"
+                begin="on_003.end"
+                dur="1ms"
+                attributeName="display"
+                to="none" />
+            <text
+                id="frametext_003"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_003">003</tspan>
+            </text>
+        </g>
 
-</svg>
+    </svg>
 
 ## CSS Animation Attributes
 
@@ -155,104 +155,104 @@ affected at a percentage of the duration of the animation.
 
 Try this example in the browser:
 
-<svg width="120" height="120"  viewBox="0 0 120 120"
-     xmlns="http://www.w3.org/2000/svg" version="1.1"
-     xmlns:xlink="http://www.w3.org/1999/xlink">
-    <style>
-    @keyframes framekeys_001 {
-        from {
-            visibility: visible
+    <svg width="120" height="120"  viewBox="0 0 120 120"
+        xmlns="http://www.w3.org/2000/svg" version="1.1"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <style>
+        @keyframes framekeys_001 {
+            from {
+                visibility: visible
+            }
+            33.333% {
+                visibility: hidden
+            }
+            to {
+                visibility: hidden
+            }
         }
-        33.333% {
-            visibility: hidden
-        }
-        to {
-            visibility: hidden
-        }
-    }
 
-    @keyframes framekeys_002 {
-        from {
-            visibility: hidden
+        @keyframes framekeys_002 {
+            from {
+                visibility: hidden
+            }
+            33.333% {
+                visibility: visible
+            }
+            66.666% {
+                visibility: hidden
+            }
+            to {
+                visibility: hidden
+            }
         }
-        33.333% {
-            visibility: visible
+
+        @keyframes framekeys_003 {
+            from {
+                visibility: hidden
+            }
+            66.666% {
+                visibility: visible
+            }
+            to {
+                visibility: hidden
+            }
         }
-        66.666% {
-            visibility: hidden
+
+        #frame_001 {
+            animation-name: framekeys_001;
+            animation-duration: 300ms;
+            animation-timing-function: step-end;
+            animation-iteration-count: infinite;
         }
-        to {
-            visibility: hidden
+
+        #frame_002 {
+            animation-name: framekeys_002;
+            animation-duration: 300ms;
+            animation-timing-function: step-end;
+            animation-iteration-count: infinite;
         }
-    }
 
-    @keyframes framekeys_003 {
-        from {
-            visibility: hidden
+        #frame_003 {
+            animation-name: framekeys_003;
+            animation-duration: 300ms;
+            animation-timing-function: step-end;
+            animation-iteration-count: infinite;
         }
-        66.666% {
-            visibility: visible
-        }
-        to {
-            visibility: hidden
-        }
-    }
+        </style>
+        <g id="frame_001">
+            <text
+                id="frametext_001"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_001">001</tspan>
+            </text>
+        </g>
 
-    #frame_001 {
-        animation-name: framekeys_001;
-        animation-duration: 300ms;
-        animation-timing-function: step-end;
-        animation-iteration-count: infinite;
-    }
+        <g id="frame_002">
+            <text
+                id="frametext_002"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_002">002</tspan>
+            </text>
+        </g>
 
-    #frame_002 {
-        animation-name: framekeys_002;
-        animation-duration: 300ms;
-        animation-timing-function: step-end;
-        animation-iteration-count: infinite;
-    }
+        <g id="frame_003">
+            <text
+                id="frametext_003"
+                stroke="white"
+                style="font:bold 64.0px monospace">
+                <tspan
+                    x="10"
+                    y="100"
+                    id="frametspan_003">003</tspan>
+            </text>
+        </g>
 
-    #frame_003 {
-        animation-name: framekeys_003;
-        animation-duration: 300ms;
-        animation-timing-function: step-end;
-        animation-iteration-count: infinite;
-    }
-    </style>
-    <g id="frame_001">
-        <text
-            id="frametext_001"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_001">001</tspan>
-        </text>
-    </g>
-
-    <g id="frame_002">
-        <text
-            id="frametext_002"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_002">002</tspan>
-        </text>
-    </g>
-
-    <g id="frame_003">
-        <text
-            id="frametext_003"
-            stroke="white"
-            style="font:bold 64.0px monospace">
-            <tspan
-                x="10"
-                y="100"
-                id="frametspan_003">003</tspan>
-        </text>
-    </g>
-
-</svg>
+    </svg>
