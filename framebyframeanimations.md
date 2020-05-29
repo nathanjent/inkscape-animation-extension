@@ -47,6 +47,7 @@ To loop the entire animation we can set every initial state to begin both
 at time 0 and at the off state of the last frame.
 
 Try this simple example in the browser:
+![SVG Set Example](./set_frames.svg)
 
     <svg width="120" height="120"  viewBox="0 0 120 120"
         xmlns="http://www.w3.org/2000/svg" version="1.1"
@@ -154,6 +155,7 @@ the frame. The difference is that we define the attributes that are
 affected at a percentage of the duration of the animation.
 
 Try this example in the browser:
+![CSS Animation Example](./css_frames.svg)
 
     <svg width="120" height="120"  viewBox="0 0 120 120"
         xmlns="http://www.w3.org/2000/svg" version="1.1"

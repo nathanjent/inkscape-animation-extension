@@ -1,0 +1,95 @@
+<svg width="120" height="120"  viewBox="0 0 120 120"
+     xmlns="http://www.w3.org/2000/svg" version="1.1"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <style>
+    @keyframes framekeys_001 {
+        from {
+            visibility: visible
+        }
+        33.333% {
+            visibility: hidden
+        }
+        to {
+            visibility: hidden
+        }
+    }
+
+    @keyframes framekeys_002 {
+        from {
+            visibility: hidden
+        }
+        33.333% {
+            visibility: visible
+        }
+        66.666% {
+            visibility: hidden
+        }
+        to {
+            visibility: hidden
+        }
+    }
+
+    @keyframes framekeys_003 {
+        from {
+            visibility: hidden
+        }
+        66.666% {
+            visibility: visible
+        }
+        to {
+            visibility: hidden
+        }
+    }
+
+    #frame_001 {
+        animation-name: framekeys_001;
+        animation-duration: 300ms;
+        animation-timing-function: step-end;
+        animation-iteration-count: infinite;
+    }
+
+    #frame_002 {
+        animation: 300ms step-end infinite framekeys_002
+    }
+
+    #frame_003 {
+        animation: 300ms step-end infinite framekeys_003
+    }
+    </style>
+    <g id="frame_001">
+        <text
+            id="frametext_001"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_001">001</tspan>
+        </text>
+    </g>
+
+    <g id="frame_002">
+        <text
+            id="frametext_002"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_002">002</tspan>
+        </text>
+    </g>
+
+    <g id="frame_003">
+        <text
+            id="frametext_003"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_003">003</tspan>
+        </text>
+    </g>
+
+</svg>

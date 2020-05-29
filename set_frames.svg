@@ -1,0 +1,95 @@
+<svg width="120" height="120"  viewBox="0 0 120 120"
+     xmlns="http://www.w3.org/2000/svg" version="1.1"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <g id="frame_001">
+        <set
+            id="init_001"
+            begin="0ms; off_003.end"
+            dur="0ms"
+            attributeName="display"
+            to="none" />
+        <set
+            id="on_001"
+            begin="init_001.end"
+            dur="100ms"
+            attributeName="display"
+            to="inline" />
+        <set
+            id="off_001"
+            begin="on_001.end"
+            dur="200ms"
+            attributeName="display"
+            to="none" />
+        <text
+            id="frametext_001"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_001">001</tspan>
+        </text>
+    </g>
+
+    <g id="frame_002">
+        <set
+            id="init_002"
+            begin="0ms; off_003.end"
+            dur="100ms"
+            attributeName="display"
+            to="none" />
+        <set
+            id="on_002"
+            begin="init_002.end"
+            dur="100ms"
+            attributeName="display"
+            to="inline" />
+        <set
+            id="off_002"
+            begin="on_002.end"
+            dur="100ms"
+            attributeName="display"
+            to="none" />
+        <text
+            id="frametext_002"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_002">002</tspan>
+        </text>
+    </g>
+
+    <g id="frame_003">
+        <set
+            id="init_003"
+            begin="0ms; off_003.end"
+            dur="200ms"
+            attributeName="display"
+            to="none" />
+        <set
+            id="on_003"
+            begin="init_003.end"
+            dur="100ms"
+            attributeName="display"
+            to="inline" />
+        <set
+            id="off_003"
+            begin="on_003.end"
+            dur="1ms"
+            attributeName="display"
+            to="none" />
+        <text
+            id="frametext_003"
+            stroke="white"
+            style="font:bold 64.0px monospace">
+            <tspan
+                x="10"
+                y="100"
+                id="frametspan_003">003</tspan>
+        </text>
+    </g>
+
+</svg>

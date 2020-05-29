@@ -7,8 +7,6 @@ images. An output extension is included. It saves a series of images using the
 inked frame layers. ffmpeg or a similar program can then be used to make as
 movie file from these images.
 
-[Download version 0.4](http://nathanjent.com/downloads/inkscape-animation-extension_0.4.zip)
-
 A simple example that I created in about a minute:
 
 ![Sample Animation of Bouncing Ball](./animationextensionexample.svg)
@@ -59,9 +57,9 @@ to png format. This is a limitation set by the Inkscape exporter.
 
 ## TODO
 
-- [ ] Update extension for Inkscape 1.0
+- [x] Update extension for Inkscape 1.0
 - [ ] Fix bug with option to hide pencil layers during output.
-- [ ] Add option to choose background image(s).
+- [x] Add option to choose background image(s).
 - [ ] Add option to choose sub-layer names.
 
 ## LICENSE
