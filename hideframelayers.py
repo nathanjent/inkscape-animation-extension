@@ -138,6 +138,17 @@ class HideLockSublayers(inkex.EffectExtension):
             if isinstance(sub_node, inkex.Layer) and sub_node.label:
                 yield (sub_node.label, sub_node)
 
+    def xpath_frame_node(self, xpath):
+        """ Iterate over nodes of the given XPath. Node id defines 'type_frame' """
+        for node in self.svg.xpath(xpath):
+            *node_type, frame_num_str = node.get("id").split("_")
+            node.type = " ".join(node_type)
+            try:
+                node.frame_num = int(frame_num_str)
+            except ValueError:
+                continue
+            yield node
+
     def effect(self):
         """ Apply the effect """
         opt = self.options
@@ -149,80 +160,61 @@ class HideLockSublayers(inkex.EffectExtension):
         xpath_layers = (
             "/svg:svg//*[name()='g'"
             " and @inkscape:groupmode='layer'"
-            " and starts-with(@id, 'frame-')"
-            " or starts-with(@id, 'ink-')"
-            " or starts-with(@id, 'paint-')"
-            " or starts-with(@id, 'pencil-')"
-            " or starts-with(@id, 'background-')"
+            " and starts-with(@id, 'frame_')"
+            " or starts-with(@id, 'ink_')"
+            " or starts-with(@id, 'paint_')"
+            " or starts-with(@id, 'pencils_')"
+            " or starts-with(@id, 'background_')"
             "][@id]"
         )
-        for layer in self.svg.xpath(xpath_layers):
-            *layer_type, frame_num_str = layer.get("id").split("-")
-            layer_type = " ".join(layer_type)
-            try:
-                frame_num = int(frame_num_str)
-            except ValueError:
-                continue
-
-            if opt.from_frame <= frame_num <= opt.to_frame:
-                if layer_type == "frame":
+        for layer in self.xpath_frame_node(xpath_layers):
+            if opt.from_frame <= layer.frame_num <= opt.to_frame:
+                if layer.type == "frame":
                     set_hidden_locked(
                         layer, opt.hide_frame_layers, opt.lock_frame_layers
                     )
-                if layer_type == "background":
-                    set_hidden_locked(
-                        layer, opt.hide_background_layers, opt.lock_background_layers,
-                    )
-                if layer_type == "paint":
+                if layer.type == "ink":
+                    set_hidden_locked(layer, opt.hide_ink_layers, opt.lock_ink_layers)
+                if layer.type == "paint":
                     set_hidden_locked(
                         layer, opt.hide_paint_layers, opt.lock_paint_layers,
                     )
-                if layer_type == "ink":
-                    set_hidden_locked(layer, opt.hide_ink_layers, opt.lock_ink_layers)
-                if layer_type == "pencils":
+                if layer.type == "pencils":
                     set_hidden_locked(
                         layer, opt.hide_pencil_layers, opt.lock_pencil_layers,
+                    )
+                if layer.type == "background":
+                    set_hidden_locked(
+                        layer, opt.hide_background_layers, opt.lock_background_layers,
                     )
 
         # Update frame display duration for browser preview
         xpath_set_nodes = (
             "/svg:svg//*[name()='set'"
-            " and starts-with(@id, 'init-')"
-            " or starts-with(@id, 'on-')"
-            " or starts-with(@id, 'off-')"
+            " and starts-with(@id, 'init_')"
+            " or starts-with(@id, 'on_')"
+            " or starts-with(@id, 'off_')"
             "][@id]"
         )
-        for set_node in self.svg.xpath(xpath_set_nodes):
-            *set_node_type, frame_num_str = set_node.get("id").split("-")
-            set_node_type = " ".join(set_node_type)
-            try:
-                frame_num = int(frame_num_str)
-            except ValueError:
-                continue
-            if opt.from_frame <= frame_num <= opt.to_frame:
-                if set_node_type == "init":
-                    adjusted_init_duration = duration_ms * (frame_num - 1)
+        for set_node in self.xpath_frame_node(xpath_set_nodes):
+            if opt.from_frame <= set_node.frame_num <= opt.to_frame:
+                if set_node.type == "init":
+                    adjusted_init_duration = duration_ms * (set_node.frame_num - 1)
                     set_node.set("dur", f"{adjusted_init_duration}ms")
-                if set_node_type == "on":
+                if set_node.type == "on":
                     set_node.set("dur", f"{duration_ms}ms")
-                if set_node_type == "off":
+                if set_node.type == "off":
                     adjusted_off_duration = (
-                        to_frame_duration - (duration_ms * (frame_num - 1)) + 1
+                        to_frame_duration - (duration_ms * (set_node.frame_num - 1)) + 1
                     )
                     set_node.set("dur", f"{adjusted_off_duration}ms")
 
         # Hide/show frame numbers
         xpath_frame_nodes = (
-            "/svg:svg//*[name()='text' and starts-with(@id, 'frametext-')][@id]"
+            "/svg:svg//*[name()='text' and starts-with(@id, 'frametext_')][@id]"
         )
-        for frame_node in self.svg.xpath(xpath_frame_nodes):
-            *frame_node_type, frame_num_str = frame_node.get("id").split("-")
-            frame_node_type = " ".join(frame_node_type)
-            try:
-                frame_num = int(frame_num_str)
-            except ValueError:
-                continue
-            if opt.from_frame <= frame_num <= opt.to_frame:
+        for frame_node in self.xpath_frame_node(xpath_frame_nodes):
+            if opt.from_frame <= frame_node.frame_num <= opt.to_frame:
                 # set frame number display
                 if opt.show_frame_numbers:
                     frame_node.style["display"] = "inline"

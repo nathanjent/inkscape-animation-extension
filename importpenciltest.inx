@@ -38,7 +38,12 @@
         gui-text="Set the color of the frame background:"
         type="color"
         appearance="colorbutton"
-        >0</param>
+        >white</param>
+    <spacer />
+    <param name="loop_frames"
+        gui-text="Loop the frames?:"
+        type="boolean"
+        >true</param>
     <spacer />
     <label indent="1" appearance="header">Document Size</label>
     <param name="size" gui-text="Document Size" type="optiongroup" appearance="combo">

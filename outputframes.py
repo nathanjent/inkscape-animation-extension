@@ -24,6 +24,7 @@ It is part of the Inkscape animation extension
 """
 from pathlib import Path
 import inkex
+from inkex.command import take_snapshot
 
 
 class OutputFrames(inkex.OutputExtension):
@@ -45,11 +46,7 @@ class OutputFrames(inkex.OutputExtension):
             help="End frame number",
         )
         pars.add_argument(
-            "--base_file",
-            type=str,
-            dest="base_file",
-            default=None,
-            help="Base filename to save frame images",
+            "--background", type=inkex.Boolean, help="Add background color"
         )
         pars.add_argument(
             "--hide_pencil",
@@ -59,26 +56,29 @@ class OutputFrames(inkex.OutputExtension):
             help="Hide pencil sublayer during export?",
         )
 
-    def layers(self, document=None):
+    def layers(self, node=None):
         """ iterate over layers """
-        if document is None:
-            document = self.document
-        for node in document.getroot().iterchildren():
-            if isinstance(node, inkex.Layer) and node.label:
-                yield (node.label, node)
+        if node is None:
+            node = self.document.getroot()
+        for sub_node in node.iterchildren():
+            if isinstance(sub_node, inkex.Layer) and sub_node.label:
+                yield (sub_node.label, sub_node)
 
     def save(self, stream):
         """ Save frame layers as multiple images """
-        svg = self.document.getroot()
         opt = self.options
 
-        base_file = Path(opt.base_file)
+        filename = self.svg.get("sodipodi:docname")
+        base_file = Path(filename)
         output_dir = base_file.parent
 
         for (label, layer) in self.layers():
             frame_id = layer.get("id")
-            *_, frame_num_str = label.split("-")
-            frame_num = int(frame_num_str)
+            *_, frame_num_str = label.split("_")
+            try:
+                frame_num = int(frame_num_str)
+            except ValueError:
+                continue
 
             if opt.from_frame <= frame_num <= opt.to_frame:
                 set_hidden(layer, False)
@@ -87,15 +87,16 @@ class OutputFrames(inkex.OutputExtension):
                         set_hidden(sub_layer, opt.hide_pencil)
 
                 # Save layer image
-                if inkex.command.is_inkscape_available():
-                    inkex.command.take_snapshot(
-                        svg,
-                        output_dir,
-                        name=(base_file.stem + frame_num_str),
-                        ext=base_file.suffix,
-                        export_id=frame_id,
-                        export_id_only=True,
-                    )
+                take_snapshot(
+                    self.document,
+                    output_dir,
+                    name=base_file.stem + frame_num_str,
+                    ext=base_file.suffix,
+                    export_id=frame_id,
+                    export_id_only=True,
+                    export_area_page=True,
+                    export_background_opacity=int(bool(self.options.background)),
+                )
 
 
 def set_hidden(node, hide):

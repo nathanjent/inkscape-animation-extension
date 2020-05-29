@@ -15,25 +15,18 @@
         min="1"
         max="999"
         >10</param>
-        <!-- TODO Should probably ask for a filename and use that as the base with an incremented frame number-->
-    <param name="base_file"
-        gui-text="Base filename to save frame images:"
-        type="file"
-        >my/path/</param>
     <param name="hide_pencil"
         gui-text="Hide pencil sublayer during export?:"
         type="boolean"
-        >True</param>
-    <effect needs-live-preview="false">
-        <object-type>all</object-type>
-        <effects-menu>
-            <submenu name="Animation Layers"/>
-        </effects-menu>
-    </effect>
+        >true</param>
+    <param name="background"
+        gui-text="Add background color:"
+        type="boolean"
+        >false</param>
     <output>
         <extension>.png</extension>
         <mimetype>image/png</mimetype>
-        <filetypename>Frames as PNG sequence (*.png)</filetypename>
+        <filetypename>Layer Frames to PNG sequence (*.png)</filetypename>
         <filetypetooltip>Save frame layers as a PNG image sequence</filetypetooltip>
     </output>
 
