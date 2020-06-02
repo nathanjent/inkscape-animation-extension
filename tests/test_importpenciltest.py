@@ -35,4 +35,12 @@ class TestImportPenciltest(ComparisonMixin, TestCase):
             "--background_color",
             "42",
         ),
+        (
+            "--from_frame",
+            "1",
+            "--to_frame",
+            "999",
+            "--frame_rate",
+            "12",
+        ),
     ]
